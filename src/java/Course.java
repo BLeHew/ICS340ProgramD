@@ -6,9 +6,9 @@ public class Course {
     private int semTaken;
     private int conflicts = 0;
 
-    private List<String> fallDays;   //days offered in the fall
-    private List<String> springDays; //days offered in the spring
-    private List<String> summerDays; //days offered in the summer
+    private String fallDays;   //days offered in the fall
+    private String springDays; //days offered in the spring
+    private String summerDays; //days offered in the summer
 
 
     private ArrayList<String> prereqs = new ArrayList<>(); //courses needed before this course
@@ -19,17 +19,31 @@ public class Course {
                   String springDays,
                   String summerDays) {
         this.name = name;
-        this.fallDays = Arrays.asList(fallDays);
-        this.springDays = Arrays.asList(springDays);
-        this.summerDays =  Arrays.asList(summerDays);
+        this.fallDays = fallDays;
+        this.springDays = springDays;
+        this.summerDays =  summerDays;
 
     }
 
     public Course() {};
 
-
-    public List<String> getSchedule(int term) {
-        switch(term) {
+    /*
+    public Character getDayOfWeekOfSchedule(int dayNum) {
+        return getSchedule().charAt(dayNum);
+    }
+    */
+    public String getSchedule() {
+        if(semTaken % 3 == 0) {
+            return fallDays;
+        }
+        if((semTaken + 1) % 3 == 0) {
+            return springDays;
+        }
+        if((semTaken + 2) % 3 == 0) {
+            return summerDays;
+        }
+        /*
+        switch(semTaken) {
             case 0:
             case 3:
             case 6:
@@ -45,13 +59,24 @@ public class Course {
             case 8:
             case 11: return summerDays;
         }
+        */
         return null;
     }
     public void setDay(Character day) {
         this.day = day;
     }
+    public void setRandomDayFromSchedule(int num) {
+        // c.setDay(c.getSchedule().charAt(r.nextInt(c.getSchedule().length())));
+        day = getSchedule().charAt(num);
+    }
     public String getName() {
         return name;
+    }
+    public void addConflict() {
+        conflicts++;
+    }
+    public int getNumConflicts() {
+        return conflicts;
     }
     public int getSemTaken() {
         return semTaken;
@@ -60,15 +85,15 @@ public class Course {
 
         this.semTaken = semTaken;
     }
-    public List<String> getFallDays() {
+    public String getFallDays() {
         return fallDays;
     }
 
-    public List<String> getSpringDays() {
+    public String getSpringDays() {
         return springDays;
     }
 
-    public List<String> getSummerDays() {
+    public String getSummerDays() {
         return summerDays;
     }
 

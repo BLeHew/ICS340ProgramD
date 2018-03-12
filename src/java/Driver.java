@@ -4,6 +4,6 @@ public class Driver {
         FileProcessor fp = new FileProcessor();
 
         Schedule s = new Schedule(fp.getCourses());
-        s.print();
+
     }
 }
