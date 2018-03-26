@@ -5,35 +5,72 @@ public class Schedule {
 
     private Semester[] sems = new Semester[11];
 
+    private Random r;
+
     private CourseList courses;
 
-    private static final long SEED = 1111112;
+    private static final long SEED = 1;
+
     public Schedule(CourseList courses) {
+
+        r = new Random();
+        r.setSeed(SEED);
+
         for(int i = 0; i < sems.length ; i++) {
             sems[i] = new Semester(i);
         }
         this.courses = courses;
         assignSemesters();
-        assignDays();
+        courses.assignDays(r);
         addUpConflicts();
 
 
-        print();
     };
+    public CourseList getCourses() {
+        return courses;
+    }
+    public int getNumConflicts(Course c) {
+        return courses.get(c.getName()).getNumConflicts();
+    }
+    public void changeCourseSemester(String c, int sem) {
+        courses.get(c).setSemTaken(sem);
 
-    private void checkIfDayIsValid() {
-        for(Course c : courses.values()) {
-            if(c.getDayTaken() == '-') {
-                numConflicts++;
-                c.addConflict();
-            }
-        }
+        numConflicts = 0;
+        resetSemesters();
+        courses.resetCourseConflicts();
+        addUpConflicts();
+    }
+    public void changeCourseSemester(Course c, int sem) {
+        changeCourseSemester(c.getName(),sem);
     }
 
     private void addUpConflicts() {
         checkIfDayIsValid();
         checkIfSemestersAreValid();
+        checkIfSemesterDaysAreValid();
+        checkConstraints();
+
     }
+    private void checkIfDayIsValid() {
+        numConflicts += courses.getDayConflicts();
+    }
+    private void checkConstraints() {
+        numConflicts += courses.getConstraintConflicts();
+    }
+    private void checkIfSemesterDaysAreValid() {
+        numConflicts += courses.getSemesterDaysConflicts();
+    }
+
+
+    public void resetSemesters() {
+        for(int i = 0; i < sems.length ; i++) {
+            sems[i] = new Semester(i);
+        }
+        for(Course c : courses.values()) {
+            sems[c.getSemTaken()].add(c);
+        }
+    }
+
 
     private void checkIfSemestersAreValid() {
         for(int i = 0; i < sems.length; i++) {
@@ -41,18 +78,10 @@ public class Schedule {
                 for(Course c: courses.values()) {
                     if(c.getSemTaken() == i) {
                         c.addConflict();
+                        numConflicts++;
                     }
                 }
             }
-        }
-    }
-
-    private void assignDays() {
-
-        Random r = new Random();
-        r.setSeed(SEED);
-        for(Course c : courses.values()) {
-            c.setRandomDayFromSchedule(r.nextInt(c.getSchedule().length()));
         }
     }
 
@@ -61,8 +90,6 @@ public class Schedule {
     }
 
     public void assignSemesters() {
-        Random r = new Random();
-        r.setSeed(SEED);
         int semester;
         for(Course c : courses.values()) {
             semester = r.nextInt(11);
@@ -77,12 +104,12 @@ public class Schedule {
             output[i] = new String("");
         }
         for(Course c : courses.values()) {
-             //System.out.println(c.getName() + " " + c.getSemTaken() + " " + c.getDayTaken());
-             output[c.getSemTaken()] += c.getNumConflicts() + "-" + c.getName() + "\t" + c.getDayTaken() + "\t";
+             output[c.getSemTaken()] += c.toString();
         }
         for(int i = 0; i < output.length; i++) {
             System.out.println(i + ". " + output[i]);
         }
+        System.out.println(numConflicts);
     }
 
 

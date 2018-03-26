@@ -35,6 +35,7 @@ public class FileProcessor {
     };
 
     private void createCourseList() {
+
         try {
             sc = new Scanner(coursesFile);
             sc.nextLine();

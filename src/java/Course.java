@@ -62,12 +62,14 @@ public class Course {
         */
         return null;
     }
+    public void setConflicts(int conflicts) {
+        this.conflicts = conflicts;
+    }
     public void setDay(Character day) {
         this.day = day;
     }
-    public void setRandomDayFromSchedule(int num) {
-        // c.setDay(c.getSchedule().charAt(r.nextInt(c.getSchedule().length())));
-        day = getSchedule().charAt(num);
+    public void setRandomDayFromSchedule(Random r) {
+        day = getSchedule().charAt(r.nextInt(getSchedule().length()));
     }
     public String getName() {
         return name;
@@ -93,13 +95,43 @@ public class Course {
         return springDays;
     }
 
+    public ArrayList<String> getPrereqs() {
+        return prereqs;
+    }
+
+
+    public ArrayList<String> getCoreqs() {
+        return coreqs;
+    }
+
+    public boolean hasConflictWith(Course c) {
+        if(coreqs.contains(c.getName())){
+            if(semTaken <= c.semTaken) {
+                return true;
+            }
+        }
+        if(prereqs.contains(c.getName())) {
+            if(semTaken < c.semTaken) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public String getSummerDays() {
         return summerDays;
     }
-
+    public boolean hasSameDayAndSemesterAs(Course c) {
+        if(day == 'O') {
+            return false;
+        }
+        else {
+            return (semTaken == c.semTaken && day == c.day && (!name.equals(c.name)));
+        }
+    }
     @Override
     public String toString() {
-        return "Course: name =" + name + " " + fallDays + " " + springDays + " " + summerDays;
+        return conflicts + "-" + name + "\t" + day + "\t";
     }
 
     public void addPrereq(String preReq) {

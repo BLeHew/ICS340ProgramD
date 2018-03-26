@@ -31,15 +31,6 @@ public class Semester {
                 return false;
             }
         }
-        /*
-        for ( int i = 0; i < daysTaken.length(); i++ ) {
-            for ( int j = i + 1; j < daysTaken.length(); j++ ) {
-                if ( daysTaken.charAt(i) == daysTaken.charAt(j) ) {
-                    return false;
-                }
-            }
-        }
-        */
         return true;
     }
 
