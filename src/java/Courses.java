@@ -1,8 +1,8 @@
 import java.util.*;
 
-public class CourseList extends HashMap<String,Course> {
+public class Courses extends HashMap<String,Course> {
 
-    public CourseList() {};
+    public Courses() {};
 
     public void put(Course c) {
         put(c.getName(),c);

@@ -6,9 +6,9 @@ public class Course {
     private int semTaken;
     private int conflicts = 0;
 
-    private String fallDays;   //days offered in the fall
-    private String springDays; //days offered in the spring
-    private String summerDays; //days offered in the summer
+    private final String fallDays;   //days offered in the fall
+    private final String springDays; //days offered in the spring
+    private final String summerDays; //days offered in the summer
 
 
     private ArrayList<String> prereqs = new ArrayList<>(); //courses needed before this course
@@ -25,41 +25,17 @@ public class Course {
 
     }
 
-    public Course() {};
-
-    /*
-    public Character getDayOfWeekOfSchedule(int dayNum) {
-        return getSchedule().charAt(dayNum);
-    }
-    */
     public String getSchedule() {
         if(semTaken % 3 == 0) {
             return fallDays;
         }
-        if((semTaken + 1) % 3 == 0) {
+        if((semTaken + 2) % 3 == 0) {
             return springDays;
         }
-        if((semTaken + 2) % 3 == 0) {
+        if((semTaken + 1) % 3 == 0) {
             return summerDays;
         }
-        /*
-        switch(semTaken) {
-            case 0:
-            case 3:
-            case 6:
-            case 9: return fallDays;
 
-            case 1:
-            case 4:
-            case 7:
-            case 10: return springDays;
-
-            case 2:
-            case 5:
-            case 8:
-            case 11: return summerDays;
-        }
-        */
         return null;
     }
     public void setConflicts(int conflicts) {
@@ -70,6 +46,16 @@ public class Course {
     }
     public void setRandomDayFromSchedule(Random r) {
         day = getSchedule().charAt(r.nextInt(getSchedule().length()));
+    }
+    public boolean setNextAvailableDay(String daysTaken) {
+        for(int i = 0; i < getSchedule().length(); i++) {
+            if(!(daysTaken.indexOf(getSchedule().charAt(i)) > 0)){
+                day = getSchedule().charAt(i);
+                return true;
+            }
+        }
+        day = '-';
+        return false;
     }
     public String getName() {
         return name;
@@ -106,13 +92,17 @@ public class Course {
 
     public boolean hasConflictWith(Course c) {
         if(coreqs.contains(c.getName())){
-            if(semTaken <= c.semTaken) {
-                return true;
+            if(!name.equals(c.name)) {
+                if(semTaken <= c.semTaken) {
+                    return true;
+                }
             }
         }
         if(prereqs.contains(c.getName())) {
-            if(semTaken < c.semTaken) {
-                return true;
+            if(!name.equals(c.name)) {
+                if(semTaken < c.semTaken) {
+                    return true;
+                }
             }
         }
         return false;

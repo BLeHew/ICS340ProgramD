@@ -5,54 +5,54 @@ public class FileProcessor {
     private File constraintsFile = new File("constraints.txt");
     private File coursesFile = new File("course.txt");
 
-    private CourseList courses = new CourseList();
+    private Courses courses = new Courses();
     private Scanner sc;
 
     public FileProcessor() {
+        createCoursesFileScanner();
         createCourseList();
+        createConstraintsFileScanner();
         addConstraintsToCourses();
-        //courses.print();
     }
-    public CourseList getCourses() {
+
+    public Courses getCourses() {
         return courses;
     }
     private void addConstraintsToCourses() {
-        try {
-            sc = new Scanner(constraintsFile);
-            sc.nextLine();
+        sc.nextLine();
 
-            while (sc.hasNextLine()) {
+        while (sc.hasNextLine()) {
 
-                String[] splitString = sc.nextLine().split("\\s+");
+            String[] splitString = sc.nextLine().split("\\s+");
 
-                courses.addConstraint(splitString[0],splitString[1],splitString[2]);
-
+            courses.addConstraint(splitString[0],splitString[1],splitString[2]);
             }
-        } catch ( FileNotFoundException x ) {
-            x.printStackTrace();
-        }
-
-    };
+    }
 
     private void createCourseList() {
+        sc.nextLine();
+        while (sc.hasNextLine()) {
 
+            String[] splitString = sc.nextLine().split("\\s+");
+
+            courses.put((new Course(splitString[0], splitString[1], splitString[2], splitString[3])));
+        }
+
+    }
+    private void createCoursesFileScanner() {
         try {
             sc = new Scanner(coursesFile);
-            sc.nextLine();
-
-            while (sc.hasNextLine()) {
-
-                String[] splitString = sc.nextLine().split("\\s+");
-
-
-                courses.put((new Course(splitString[0], splitString[1], splitString[2], splitString[3])));
-            }
         } catch ( FileNotFoundException x ) {
             x.printStackTrace();
         }
-
-    };
-
+    }
+    private void createConstraintsFileScanner() {
+        try {
+            sc = new Scanner(constraintsFile);
+        } catch ( FileNotFoundException x ) {
+            x.printStackTrace();
+        }
+    }
 
 
 }
