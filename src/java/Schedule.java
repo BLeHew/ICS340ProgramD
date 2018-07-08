@@ -124,22 +124,12 @@ public class Schedule {
     }
 
     private void addUpConflicts() {
-        checkIfDayIsValid();
-        checkIfSemestersAreValid();
-        checkIfSemesterDaysAreValid();
-        checkConstraints();
-
-    }
-    private void checkIfDayIsValid() {
         numConflicts += courses.getDayConflicts();
-    }
-    private void checkConstraints() {
-        numConflicts += courses.getConstraintConflicts();
-    }
-    private void checkIfSemesterDaysAreValid() {
+        checkIfSemestersAreValid();
         numConflicts += courses.getSemesterDaysConflicts();
-    }
+        numConflicts += courses.getConstraintConflicts();
 
+    }
 
     public void resetSemesters() {
         for(int i = 0; i < sems.length ; i++) {

@@ -93,7 +93,7 @@ public class Course {
     public boolean hasConflictWith(Course c) {
         if(coreqs.contains(c.getName())){
             if(!name.equals(c.name)) {
-                if(semTaken <= c.semTaken) {
+                if(semTaken < c.semTaken) {
                     return true;
                 }
             }

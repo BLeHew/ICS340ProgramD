@@ -1,3 +1,5 @@
+import java.util.*;
+
 public class Semester {
     //private String daysTaken;
     private int numDaysTaken;
@@ -8,12 +10,10 @@ public class Semester {
         courses = new Courses();
         this.semNum = semNum;
         numDaysTaken = 0;
-        //daysTaken = new String("");
     }
 
     public void add(Course c) {
         courses.put(c);
-        //daysTaken.concat(String.valueOf(c.getDayTaken()));
         numDaysTaken++;
     }
     public boolean isNumDaysValid() {
@@ -35,39 +35,46 @@ public class Semester {
         }
         return true;
     }
-    /*
     public void assignDaysToCourses() {
-        ArrayList<Character> daysTaken = new ArrayList<>();
+        String domain = createDayDomain();
+
+        int i = 0;
+
         for(Course c: courses.values()) {
+
+
             if(c.getSchedule().endsWith("O")) {
                 c.setDay('O');
             }
-            else
-            {
-                for(int i = 0; i < c.getSchedule().length();i++) {
-                    if(!daysTaken.contains(c.getSchedule().charAt(i))) {
-                        c.setDay(c.getSchedule().charAt(i));
-                        daysTaken.add(c.getSchedule().charAt(i));
-                    }
+            else {
+                if(i > domain.length()) {
+                    c.setDay('-');
                 }
-            }
-        }
-    }
-    */
-    public void assignDaysToCourses() {
-        StringBuffer daysTaken = new StringBuffer();
-        for(Course c: courses.values()) {
-            if(c.getSchedule().endsWith("O")) {
-                c.setDay('O');
-            }
-            else
-            {
-                if(c.setNextAvailableDay(daysTaken.toString())){
-                    daysTaken.append(c.getDayTaken());
+                else {
+                    c.setDay(domain.charAt(i));
+                    i++;
                 }
             }
 
         }
     }
+    public String createDayDomain() {
 
+        LinkedHashSet<Character> lhs = new LinkedHashSet<>();
+        StringBuilder sb = new StringBuilder();
+
+        for(Course c :  courses.values()) {
+            sb.append(c.getSchedule());
+        }
+
+        for(int i = 0; i < sb.toString().length(); i++) {
+            lhs.add(sb.toString().charAt(i));
+        }
+
+        StringBuilder sb2 = new StringBuilder();
+        for (Character ch : lhs) {
+            sb2.append(ch);
+        }
+        return sb2.toString();
+    }
 }
