@@ -1,7 +1,6 @@
 import java.util.*;
 
 public class Semester {
-    //private String daysTaken;
     private int numDaysTaken;
     private int semNum;
     private Courses courses;
@@ -36,29 +35,33 @@ public class Semester {
         return true;
     }
     public void assignDaysToCourses() {
-        String domain = createDayDomain();
+        LinkedList<Character> domain = createDayDomain();
 
-        int i = 0;
+        System.out.println(semNum + ". " + domain);
 
         for(Course c: courses.values()) {
-
 
             if(c.getSchedule().endsWith("O")) {
                 c.setDay('O');
             }
             else {
-                if(i > domain.length()) {
+                if(domain.isEmpty()) {
                     c.setDay('-');
                 }
                 else {
-                    c.setDay(domain.charAt(i));
-                    i++;
+                    for(char day : c.getSchedule().toCharArray()) {
+                        if(domain.contains(day)) {
+                            c.setDay(day);
+                            domain.remove((Character) day);
+                            break;
+                        }
+                    }
                 }
             }
 
         }
     }
-    public String createDayDomain() {
+    public LinkedList<Character> createDayDomain() {
 
         LinkedHashSet<Character> lhs = new LinkedHashSet<>();
         StringBuilder sb = new StringBuilder();
@@ -71,10 +74,8 @@ public class Semester {
             lhs.add(sb.toString().charAt(i));
         }
 
-        StringBuilder sb2 = new StringBuilder();
-        for (Character ch : lhs) {
-            sb2.append(ch);
-        }
-        return sb2.toString();
+        LinkedList<Character> ll = new LinkedList<>();
+        ll.addAll(lhs);
+        return ll;
     }
 }

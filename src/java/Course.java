@@ -44,19 +44,6 @@ public class Course {
     public void setDay(Character day) {
         this.day = day;
     }
-    public void setRandomDayFromSchedule(Random r) {
-        day = getSchedule().charAt(r.nextInt(getSchedule().length()));
-    }
-    public boolean setNextAvailableDay(String daysTaken) {
-        for(int i = 0; i < getSchedule().length(); i++) {
-            if(!(daysTaken.indexOf(getSchedule().charAt(i)) > 0)){
-                day = getSchedule().charAt(i);
-                return true;
-            }
-        }
-        day = '-';
-        return false;
-    }
     public String getName() {
         return name;
     }

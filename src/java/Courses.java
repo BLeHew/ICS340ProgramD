@@ -57,9 +57,4 @@ public class Courses extends HashMap<String,Course> {
             c.setConflicts(0);
         }
     }
-    public void assignDays(Random r) {
-        for(Course c : values()) {
-            c.setRandomDayFromSchedule(r);
-        }
-    }
 }

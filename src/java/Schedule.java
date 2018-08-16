@@ -21,7 +21,9 @@ public class Schedule {
         }
         this.courses = courses;
         assignSemesters();
-        courses.assignDays(r);
+        for(Semester s : sems) {
+            s.assignDaysToCourses();
+        }
         addUpConflicts();
 
 
