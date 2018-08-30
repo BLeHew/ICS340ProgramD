@@ -1,40 +1,28 @@
 import java.util.*;
 
+import course.*;
+
 public class Schedule {
     private int numConflicts;
 
-    private Semester[] sems = new Semester[11];
+    protected Random r;
 
-    private Random r;
+    protected final Courses courses;
 
-    private Courses courses;
-
-    private static final long SEED = 1;
+    private static final long SEED = 2;
 
     public Schedule(Courses courses) {
 
         r = new Random();
         r.setSeed(SEED);
-
-        for(int i = 0; i < sems.length ; i++) {
-            sems[i] = new Semester(i);
-        }
         this.courses = courses;
         assignSemesters();
-        for(Semester s : sems) {
-            s.assignDaysToCourses();
-        }
-        addUpConflicts();
-
 
     };
-    public Schedule(Courses courses,int m) {
+    public Schedule(Courses courses, int n) {
         r = new Random();
-        for(int i = 0; i < sems.length ; i++) {
-            sems[i] = new Semester(i);
-        }
         this.courses = courses;
-        for(Course c: courses.values()) {
+        for(Course c: this.courses.values()) {
             switch(c.getName()) {
             case "NSci204": c.setSemTaken(3);
                 break;
@@ -66,11 +54,11 @@ public class Schedule {
                 break;
             case "Writ231": c.setSemTaken(6);
                 break;
-            case "Writ131": c.setSemTaken(1);
+            case "Writ131": c.setSemTaken(0);
                 break;
             case "ICS365": c.setSemTaken(10);
                 break;
-            case "Math210": c.setSemTaken(0);
+            case "Math210": c.setSemTaken(1);
                 break;
             case "Math211": c.setSemTaken(2);
                 break;
@@ -97,92 +85,42 @@ public class Schedule {
             case "ICS462": c.setSemTaken(8);
                 break;
             }
-            sems[c.getSemTaken()].add(c);
 
         }
-        for(Semester s : sems) {
-            s.assignDaysToCourses();
-        }
-        //courses.assignDays(r);
-        addUpConflicts();
+
+
 
     }
-    public Courses getCourses() {
+    public Schedule(Schedule other) {
+        r = other.r;
+        courses = other.courses;
+    }
+    public Courses getCourses(){
         return courses;
     }
-    public int getNumConflicts(Course c) {
-        return courses.get(c.getName()).getNumConflicts();
-    }
-    public void changeCourseSemester(String c, int sem) {
-        courses.get(c).setSemTaken(sem);
-
-        numConflicts = 0;
-        resetSemesters();
-        courses.resetCourseConflicts();
-        addUpConflicts();
-    }
-    public void changeCourseSemester(Course c, int sem) {
-        changeCourseSemester(c.getName(),sem);
-    }
-
-    private void addUpConflicts() {
-        numConflicts += courses.getDayConflicts();
-        checkIfSemestersAreValid();
-        numConflicts += courses.getSemesterDaysConflicts();
-        numConflicts += courses.getConstraintConflicts();
-
-    }
-
-    public void resetSemesters() {
-        for(int i = 0; i < sems.length ; i++) {
-            sems[i] = new Semester(i);
-        }
-        for(Course c : courses.values()) {
-            sems[c.getSemTaken()].add(c);
-        }
-    }
-
-
-    private void checkIfSemestersAreValid() {
-        for(int i = 0; i < sems.length; i++) {
-            if(!sems[i].isNumDaysValid()) {
-                for(Course c: courses.values()) {
-                    if(c.getSemTaken() == i) {
-                        c.addConflict();
-                        numConflicts++;
-                    }
-                }
-            }
-        }
-    }
-
-    public int getNumConflicts() {
-        return numConflicts;
-    }
-
 
     public void assignSemesters() {
         int semester;
+
         for(Course c : courses.values()) {
             semester = r.nextInt(11);
             c.setSemTaken(semester);
-            sems[semester].add(c);
         }
 
     }
     public void print() {
-        String[] output = new String[11];
+        StringBuilder[] output = new StringBuilder[11];
         for(int i = 0; i < output.length; i++) {
-            output[i] = new String("");
+            output[i] = new StringBuilder();
         }
         for(Course c : courses.values()) {
-             output[c.getSemTaken()] += c.toString();
+             output[c.getSemTaken()].append(c.toString());
         }
-        for(int i = 0; i < output.length; i++) {
+        for(int i = 0; i < 11; i++) {
             System.out.println(i + ". " + output[i]);
         }
-        System.out.println(numConflicts);
     }
+
 
 
 

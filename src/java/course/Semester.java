@@ -1,19 +1,56 @@
+package course;
 import java.util.*;
 
 public class Semester {
     private int numDaysTaken;
-    private int semNum;
-    private Courses courses;
+    private LinkedHashSet<Character> domain;
+    private final int semNum;
 
     public Semester(int semNum) {
-        courses = new Courses();
-        this.semNum = semNum;
+        domain = new LinkedHashSet<>();
         numDaysTaken = 0;
+        this.semNum = semNum;
     }
 
-    public void add(Course c) {
-        courses.put(c);
+    public void add(String course,Courses courses) {
         numDaysTaken++;
+
+        /*
+        for(int i = 0; i < c.getSchedule().length(); i++) {
+            domain.add(c.getSchedule().charAt(i));
+        }
+
+        if(c.getSchedule().endsWith("O")) {
+            courseList.get(c.getName()).setDay('O');
+            domain.remove('O');
+
+        }else if (domain.isEmpty()) {
+            courseList.get(c.getName()).setDay('-');
+        }
+        else {
+            for(char day : c.getSchedule().toCharArray()) {
+                if(domain.contains(day)) {
+                    domain.remove(day);
+                    break;
+                }
+            }
+        }
+        numDaysTaken++;
+        if(!isNumDaysValid()) {
+            courseList.get(c.getName()).addConflict(Course.SEMCONF);
+        }
+        */
+
+    }
+    public void remove(String c,Courses courseList) {
+        /*
+        char[] temp = courseList.get(c).getSchedule().toCharArray();
+
+        for(char ch : temp) {
+            domain.remove(ch);
+        }
+        */
+        numDaysTaken--;
     }
     public boolean isNumDaysValid() {
 
@@ -33,49 +70,5 @@ public class Semester {
             }
         }
         return true;
-    }
-    public void assignDaysToCourses() {
-        LinkedList<Character> domain = createDayDomain();
-
-        System.out.println(semNum + ". " + domain);
-
-        for(Course c: courses.values()) {
-
-            if(c.getSchedule().endsWith("O")) {
-                c.setDay('O');
-            }
-            else {
-                if(domain.isEmpty()) {
-                    c.setDay('-');
-                }
-                else {
-                    for(char day : c.getSchedule().toCharArray()) {
-                        if(domain.contains(day)) {
-                            c.setDay(day);
-                            domain.remove((Character) day);
-                            break;
-                        }
-                    }
-                }
-            }
-
-        }
-    }
-    public LinkedList<Character> createDayDomain() {
-
-        LinkedHashSet<Character> lhs = new LinkedHashSet<>();
-        StringBuilder sb = new StringBuilder();
-
-        for(Course c :  courses.values()) {
-            sb.append(c.getSchedule());
-        }
-
-        for(int i = 0; i < sb.toString().length(); i++) {
-            lhs.add(sb.toString().charAt(i));
-        }
-
-        LinkedList<Character> ll = new LinkedList<>();
-        ll.addAll(lhs);
-        return ll;
     }
 }

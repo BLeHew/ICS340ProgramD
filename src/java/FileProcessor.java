@@ -1,18 +1,23 @@
 import java.io.*;
 import java.util.*;
 
+import course.*;
+
 public class FileProcessor {
     private File constraintsFile = new File("constraints.txt");
     private File coursesFile = new File("course.txt");
 
-    private Courses courses = new Courses();
+    private Courses courses;
+
     private Scanner sc;
 
     public FileProcessor() {
+        courses = new Courses();
         createCoursesFileScanner();
         createCourseList();
         createConstraintsFileScanner();
         addConstraintsToCourses();
+
     }
 
     public Courses getCourses() {
@@ -24,8 +29,7 @@ public class FileProcessor {
         while (sc.hasNextLine()) {
 
             String[] splitString = sc.nextLine().split("\\s+");
-
-            courses.addConstraint(splitString[0],splitString[1],splitString[2]);
+            courses.put(splitString[0],splitString[1],splitString[2]);
             }
     }
 
@@ -35,7 +39,7 @@ public class FileProcessor {
 
             String[] splitString = sc.nextLine().split("\\s+");
 
-            courses.put((new Course(splitString[0], splitString[1], splitString[2], splitString[3])));
+            courses.put(new Course(splitString[0]), splitString[1], splitString[2], splitString[3]);
         }
 
     }

@@ -28,4 +28,4 @@ Phys110   M      W      -
 Psyc100   MTH    MTF    T
 RelS304   W      W      O
 Writ131   MWHS   MWHS   MT
-Writ231 MTWHFO MTWHFO THO
+Writ231   MTWHFO MTWHFO THO

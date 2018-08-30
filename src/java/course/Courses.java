@@ -1,60 +1,40 @@
+package course;
 import java.util.*;
+
+import constraints.*;
+import domain.*;
+import schedule.*;
+
 
 public class Courses extends HashMap<String,Course> {
 
-    public Courses() {};
+    private CourseSchedules courseSchedules = new CourseSchedules();
+    private CourseDomains courseDomains = new CourseDomains();
+    private CourseConstraints courseConstraints = new CourseConstraints();
 
-    public void put(Course c) {
+    private Semester[] sems = new Semester[11];
+
+    public Courses() {
+        for(int i = 0; i < 11; i++) {
+            sems[i] = new Semester(i);
+        }
+    }
+
+    public void put(Course c, String fallDays, String springDays, String summerDays) {
         put(c.getName(),c);
+        courseSchedules.put(c.getName(), new CourseSchedule(fallDays, springDays, summerDays));
+        courseDomains.put(c.getName(), new CourseDomain(fallDays,springDays,summerDays));
+    }
+    public CourseSchedule getCourseSchedule(String course) {
+        return courseSchedules.get(course);
+    }
+    public void put(String lhs, String type, String rhs) {
+        courseConstraints.addConstraint(lhs, type, rhs);
+    }
+    public void setSemTaken(String course, int sem) {
+        sems[sem].add(course,this);
+        get(course).setSemTaken(sem);
+        courseDomains.get(course);
     }
 
-    public void addConstraint(String lhs,String type, String rhs) {
-        switch(type) {
-            case "<":  get(rhs).addPrereq(lhs);
-                break;
-            case "<=": get(rhs).addCoreq(lhs);
-                break;
-            default:
-                break;
-        }
-    }
-    public int getDayConflicts() {
-        int numConflicts = 0;
-        for(Course c : values()) {
-            if(c.getDayTaken() == '-') {
-                numConflicts++;
-                c.addConflict();
-            }
-        }
-        return numConflicts;
-    }
-    public int getConstraintConflicts() {
-        int numConflicts = 0;
-        for(Course c : values()) {
-            for(Course c1 : values()) {
-                if(c.hasConflictWith(c1)) {
-                    c.addConflict();
-                    numConflicts++;
-                }
-            }
-        }
-        return numConflicts;
-    }
-    public int getSemesterDaysConflicts() {
-        int numConflicts = 0;
-        for(Course c: values()) {
-            for(Course c1 : values()) {
-                if(c.hasSameDayAndSemesterAs(c1)) {
-                    c.addConflict();
-                    numConflicts++;
-                }
-            }
-        }
-        return numConflicts;
-    }
-    public void resetCourseConflicts() {
-        for(Course c : values()) {
-            c.setConflicts(0);
-        }
-    }
 }
