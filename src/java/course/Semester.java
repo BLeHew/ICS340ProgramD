@@ -1,73 +1,71 @@
 package course;
 import java.util.*;
 
+import domain.*;
+
 public class Semester {
     private int numDaysTaken;
-    private LinkedHashSet<Character> domain;
+    private SemesterDomain domain;
     private final int semNum;
+    private HashSet<String> courseList;
+    private HashMap<String, Character> courseDays = new HashMap<String, Character>();
+    private HashSet<String> badCourses;
 
     public Semester(int semNum) {
-        domain = new LinkedHashSet<>();
+        domain  = new SemesterDomain(semNum);
         numDaysTaken = 0;
         this.semNum = semNum;
+        courseList = new HashSet<>();
     }
 
     public void add(String course,Courses courses) {
         numDaysTaken++;
-
-        /*
-        for(int i = 0; i < c.getSchedule().length(); i++) {
-            domain.add(c.getSchedule().charAt(i));
+        domain.add(course, courses.getCourseSchedule(course));
+        courseList.add(course);
+        
+        if(courses.getCourseSchedule(course).endsWith("O")) {
+            courses.get(course).setDay('O');
+            courseDays.put(course, 'O');
+        }else {
+            courseDays.put(course, courses.getCourseSchedule(course).charAt(0));
+            
         }
 
-        if(c.getSchedule().endsWith("O")) {
-            courseList.get(c.getName()).setDay('O');
-            domain.remove('O');
+        if(domain.hasEnoughDays(numDaysTaken)) {
+            assignDays(courses);
+        }
 
-        }else if (domain.isEmpty()) {
-            courseList.get(c.getName()).setDay('-');
+        if(!domain.isNumDaysValid(numDaysTaken)) {
+            //courses.getCourseDomain(course).addConflict(semNum);
         }
-        else {
-            for(char day : c.getSchedule().toCharArray()) {
-                if(domain.contains(day)) {
-                    domain.remove(day);
-                    break;
-                }
-            }
-        }
-        numDaysTaken++;
-        if(!isNumDaysValid()) {
-            courseList.get(c.getName()).addConflict(Course.SEMCONF);
-        }
-        */
 
     }
-    public void remove(String c,Courses courseList) {
-        /*
-        char[] temp = courseList.get(c).getSchedule().toCharArray();
-
-        for(char ch : temp) {
-            domain.remove(ch);
+    public void assignDays(Courses courses) {
+        
+        for(String course : courseList) {
+            if(courses.getCourseSchedule(course).endsWith("O")) {
+                courses.get(course).setDay('O');
+                domain.remove('O');
+            }else if(domain.isEmpty()) {
+                courses.get(course).setDay('-');
+            }
+            else {
+                courses.get(course).setDay(domain.getNextDay(courses.getCourseSchedule(course), course));
+            }
         }
-        */
+
+    }
+    public void remove(String course,Courses courses) {
+        courseList.remove(course);
+        domain.remove(course,courses);
         numDaysTaken--;
     }
-    public boolean isNumDaysValid() {
 
-        if(semNum % 3 == 0) {
-            if(numDaysTaken > 3) {
-                return false;
-            }
-        }
-        if((semNum + 2) % 3 == 0) {
-            if(numDaysTaken > 3) {
-                return false;
-            }
-        }
-        if((semNum + 1) % 3 == 0) {
-            if(numDaysTaken > 2) {
-                return false;
-            }
+    public boolean checkIfValid(String course, Courses courses) {
+        domain.pool();
+        courses.get(course).setDay(domain.getNextDay(courses.getCourseSchedule(course), course));
+        if(courses.get(course).getDayTaken() == '-') {
+            return false;
         }
         return true;
     }
