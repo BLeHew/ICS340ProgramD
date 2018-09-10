@@ -3,13 +3,13 @@ import java.util.*;
 import course.*;
 
 public class Schedule {
-    private int numConflicts;
 
     protected Random r;
 
     protected final Courses courses;
 
-    private static final long SEED = 9;
+    public static final long SEED = 9;
+    public static final Random rand = new Random();
 
     public Schedule(Courses courses) {
 
@@ -51,22 +51,27 @@ public class Schedule {
         this.courses.setSemTaken("ICS462",8);
 
     }
-
+    public void setSemTaken(String course, int semester) {
+        this.courses.setSemTaken(course, semester);
+    }
+    public int getNumConflicts() {
+        return this.courses.getNumConflicts();
+    }
+    public void checkConflicts() {
+        courses.checkConflicts();
+    }
     public Courses getCourses(){
         return courses;
     }
-    public boolean hasBadCourse() {
-        return courses.hasBadCourse();
-    }
-    public void changeCourseSemester(String course, int sem) {
-        courses.changeCourseSemester(course, sem);
-    }
-    public void validateDays() {
-        courses.validateDays();
+    public void assignSemesters() {
+        assignSemesters(0);
     }
     public void assignSemesters(long seed) {
         int semester;
-        r.setSeed(seed);
+        if(seed != 0 ) {
+            r.setSeed(seed);
+        }
+        
         for(Course c : courses.values()) {
             semester = r.nextInt(11);
             courses.setSemTaken(c.getName(),semester);
@@ -79,7 +84,7 @@ public class Schedule {
             output[i] = new StringBuilder();
         }
         for(Course c : courses.values()) {
-             output[c.getSemTaken()].append(courses.getCourseDomain(c.getName()).size(c.getSemTaken()) + " " + c.toString());
+            output[c.getSemTaken()].append(c.toString());
         }
         for(int i = 0; i < 11; i++) {
             System.out.println(i + ". " + output[i]);

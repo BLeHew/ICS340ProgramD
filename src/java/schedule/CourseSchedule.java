@@ -1,5 +1,10 @@
 package schedule;
 
+import java.util.ArrayList;
+import java.util.Random;
+
+import course.Courses;
+
 public class CourseSchedule {
     private final String fallDays;   //days offered in the fall
     private final String springDays; //days offered in the spring
@@ -23,7 +28,19 @@ public class CourseSchedule {
 
         return null;
     }
-
+    public ArrayList<Integer> schedsWithDash(){
+        ArrayList<Integer> retArr = new ArrayList<Integer>();
+        if(fallDays.endsWith("-")) {
+            retArr.add(0);
+        }
+        if(springDays.endsWith("-")) {
+            retArr.add(1);
+        }
+        if(summerDays.endsWith("-")) {
+            retArr.add(2);
+        }
+        return retArr.size() > 0 ? retArr : null;
+    }
     public String getFallDays() {
         return fallDays;
     }
@@ -31,8 +48,15 @@ public class CourseSchedule {
     public String getSpringDays() {
         return springDays;
     }
+    public Character getDayFromSchedule(int semTaken, int index) {
+        return getDays(semTaken).charAt(index);
+    }
 
     public String getSummerDays() {
         return summerDays;
+    }
+    public Character getRandomDayFromSchedule(int semTaken) {
+        Random r = new Random();
+        return getDays(semTaken).charAt(r.nextInt(getDays(semTaken).length() + 1));
     }
 }

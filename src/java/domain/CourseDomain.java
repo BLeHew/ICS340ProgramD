@@ -3,51 +3,65 @@ package domain;
 import java.util.*;
 
 import conflict.*;
+import course.Courses;
 
 public class CourseDomain {
 
     public static final int SIZE = 11;
+    private HashSet<Integer> initialDomain = new HashSet<Integer>();
 
-
-    private ArrayList<HashSet<Conflict>> conflicts = new ArrayList<>(11);
-
-    public CourseDomain(String fallDays,String springDays, String summerDays) {
-
-
-
+    //private ArrayList<HashSet<Conflict>> conflicts = new ArrayList<>(11);
+    private HashSet<Conflict> conflicts = new HashSet<Conflict>();
+    
+    public boolean hasConflicts() {
+       return conflicts.size() > 0;
+    }
+    public void createInitial(String course) {
         for(int i = 0; i < SIZE; i++) {
-            conflicts.add(new HashSet<Conflict>());
+            initialDomain.add(i);
         }
+        ArrayList<Integer> semsToTrim = Courses.courseSchedules.get(course).schedsWithDash();
+        
+        if(semsToTrim != null) {
+            for(Integer x : semsToTrim) {
+                for(int i = x; i < SIZE; i+= 3) {
+                    initialDomain.remove(i);
+                }
+            }  
+        }
+        //if(Courses.courseConstraints.hasNextConstraints(course)) {
+        //    initialDomain.remove(11);
+        //}
 
-        if(fallDays.charAt(0) == '-') {
-            addDaysConflict(0);
-        }
-        if(springDays.charAt(0) == '-') {
-            addDaysConflict(1);
-        }
-        if(summerDays.charAt(0) == '-') {
-            addDaysConflict(2);
-        }
-
+        
     }
     public void removeConflict(Conflict c) {
-        for(HashSet<Conflict> hs : conflicts) {
-            hs.remove(c);
-        }
+        conflicts.remove(c);
     }
     public int size(int index) {
-        return conflicts.get(index).size();
+        return conflicts.size();
     }
-    public void addSemesterConflict(int sem) {
-        conflicts.get(sem).add(new Conflict(1));
+    public void addConflict(Conflict c) {
+        conflicts.add(c);
     }
-    public void addConflict(int sem, Conflict c) {
-        conflicts.get(sem).add(c);
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for(Conflict c : conflicts) {
+              sb.append(c + "\n");
+        }
+        return sb.toString();
     }
-    private void addDaysConflict(int start) {
-        for(int i = start; i < SIZE; i+= 3) {
-            conflicts.get(i).add(new Conflict(3));
+    public void addMultipleConflicts(Conflict conflict) {
+        for(int i = conflict.getSemester(); i < SIZE; i++) {
+            conflicts.add(new Conflict(conflict, i));
         }
     }
+    public void removeMultipleConflicts(Conflict conflict) {
+        while(conflicts.contains(conflict)) {
+            conflicts.remove(conflict);
+        }
+    }
+
 
 }
