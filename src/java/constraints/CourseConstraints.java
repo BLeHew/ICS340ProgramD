@@ -33,7 +33,6 @@ public class CourseConstraints extends HashMap<String, CourseRequisites>{
                     }else {
                         get(e.getKey()).addConstraint(e.getKey(),cs.getKey());
                     }
-                    //get(e.getKey()).addConstraint(e.getKey(), cs.getKey());
                 
                      
             }
