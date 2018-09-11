@@ -8,7 +8,6 @@ import schedule.CourseSchedule;
 
 public class Driver {
     public static void main(String args[]) {
-
         
         FileProcessor fp = new FileProcessor();
         FileProcessor fp1 = new FileProcessor();

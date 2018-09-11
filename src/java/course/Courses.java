@@ -70,7 +70,7 @@ public class Courses extends HashMap<String,Course> {
     }
 
     public void checkConflicts() {
-        System.out.println(courseConstraints);
+        courseConstraints.print();
     }
 
 

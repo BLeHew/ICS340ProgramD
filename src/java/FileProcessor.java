@@ -24,7 +24,6 @@ public class FileProcessor {
         return courses;
     }
     private void addConstraintsToCourses() {
-        sc.nextLine();
 
         while (sc.hasNextLine()) {
 
