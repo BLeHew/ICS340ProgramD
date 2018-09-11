@@ -53,11 +53,6 @@ public class CourseRequisites{
         }else {
             addConstraint(root).addConstraint(leaf);
         }
-        if(root.equals("Writ131")) {
-            System.out.println("adding: " + leaf);
-            print();
-            System.out.println();
-        }
     }
 
     public CourseRequisites addConstraint(String leaf) {

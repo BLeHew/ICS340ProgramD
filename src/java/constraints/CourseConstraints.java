@@ -20,38 +20,45 @@ public class CourseConstraints extends HashMap<String, CourseRequisites>{
     
     public void constructConstraintTrees() {
         
-        for(String str : constraintsMap.keySet()) {
-            put(str,new CourseRequisites(str));
+        for(String lhs : constraintsMap.keySet()) {
+            
+            String spot = mapContains(lhs);
+            
+            if(spot != null) {
+                put(spot, new CourseRequisites(spot, lhs));
+            }else {
+                put(lhs, new CourseRequisites(lhs));
+            } 
+            
         }
+        
         
         for(Entry<String,HashMap<String,String>> e : constraintsMap.entrySet()) {
                        
             for(Entry<String,String> cs : e.getValue().entrySet()) {
 
-                    if(constraintsMap.containsKey(cs.getKey())) {
-                        get(cs.getKey()).addConstraint(e.getKey(), cs.getKey());
-                    }else {
-                        get(e.getKey()).addConstraint(e.getKey(),cs.getKey());
-                    }
-                
+               String findMap = mapContains(cs.getKey());
+               
+               
                      
             }
             
         }
         
     }
-    
-    
-    public String treesContains(String lhs) {
-        for(Entry<String,CourseRequisites> e : this.entrySet()) {
-            if(e.getValue().contains(lhs)) {
-                return e.getValue().getHead();
+    public String mapContains(String item) {
+        for(Entry<String, HashMap<String,String>> e : constraintsMap.entrySet()) {
+            if(e.getValue().containsKey(item)) {
+                return e.getKey();
             }
         }
         return null;
     }
+
     public void print() {
         constructConstraintTrees();
+        
+        
         for(Entry<String,CourseRequisites> e : this.entrySet()) {
             e.getValue().print();
         }
