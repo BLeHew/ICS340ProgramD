@@ -21,14 +21,11 @@ public class CourseConstraints extends HashMap<String, CourseRequisites>{
     public void constructConstraintTrees() {
         
         for(String lhs : constraintsMap.keySet()) {
-            
-            String spot = mapContains(lhs);
-            
-            if(spot != null) {
-                put(spot, new CourseRequisites(spot, lhs));
+            if(mapContains(lhs) == null) {
+                put(lhs,new CourseRequisites(lhs));
             }else {
-                put(lhs, new CourseRequisites(lhs));
-            } 
+                put(mapContains(lhs), new CourseRequisites(mapContains(lhs), lhs));
+            }
             
         }
         
@@ -45,6 +42,14 @@ public class CourseConstraints extends HashMap<String, CourseRequisites>{
             
         }
         
+    }
+    public String constContains(String item) {
+        for(Entry<String,CourseRequisites> e : entrySet()) {
+            if(e.getKey().equals(item)) {
+                return e.getKey();
+            }
+        }
+        return null;
     }
     public String mapContains(String item) {
         for(Entry<String, HashMap<String,String>> e : constraintsMap.entrySet()) {
