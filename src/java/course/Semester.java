@@ -88,9 +88,10 @@ public class Semester {
                         assignedDays.put(course,day);
                         break;
                     }
-
-            }
-            numTries--;
+                    assignedDays.put(course, '-');
+                }
+                
+                numTries--;
         }
             
 
