@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Map.Entry;
 import java.util.Random;
 
 import course.Course;
@@ -12,31 +13,40 @@ public class Driver {
         FileProcessor fp = new FileProcessor();
         FileProcessor fp1 = new FileProcessor();
 
-        //Courses cs = new Courses(fp.getCourses());
+        //Courses cs = fp.getCourses();
+        
+
 
         Schedule test = new Schedule(fp.getCourses(),1);
-        
+        test.checkConflicts();
+        test.print();
+        System.out.println();
         Schedule s  = new Schedule(fp1.getCourses());
                     
         s.assignSemesters();
-        
-        System.out.println();
         s.checkConflicts();
         s.print();
+        
+        
+        
+        System.out.println();
+        /*
+        for(Entry<String, Course> c : test.getCourses().entrySet()) {
+            s.setSemTaken(c.getKey(), c.getValue().getSemTaken());
+        }*/
+        s.printCoursesFitness();
+        s.solve();
+        
+        System.out.println();
+        
+        
+        //System.out.println();
+        
+        //s.checkConflicts();
 
         
-        for(Course c : test.getCourses().values()) {
-            s.setSemTaken(c.getName(), c.getSemTaken());
-        }
+       
         
-        
-        //test.checkConflicts();
-        //s.checkConflicts();
-        
-        //test.print();
-        System.out.println();
-        s.print();
-    
         
     }
 }

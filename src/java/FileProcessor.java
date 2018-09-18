@@ -38,7 +38,7 @@ public class FileProcessor {
 
             String[] splitString = sc.nextLine().split("\\s+");
 
-            courses.put(new Course(splitString[0]), splitString[1], splitString[2], splitString[3]);
+            courses.put(splitString[0], splitString[1], splitString[2], splitString[3]);
         }
 
     }

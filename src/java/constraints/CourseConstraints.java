@@ -1,60 +1,43 @@
 package constraints;
 
 import java.util.*;
+import java.util.Map.Entry;
 
-import domain.*;
+import conflict.Conflict;
 
-public class CourseConstraints extends HashMap<String, HashMap<String,Node>>{
+public class CourseConstraints{
 
 
-    HashMap<String,HashMap<String,String>> constraintsMap = new HashMap<>();
+    HashMap<String,HashMap<String,String>> constraintsMap = new HashMap<String,HashMap<String,String>>();
 
     public void addConstraint(String lhs,String type, String rhs) {
         if(!constraintsMap.containsKey(lhs)) {
-            constraintsMap.put(lhs,new HashMap<String,String>());
-            constraintsMap.get(lhs).put(rhs, type);
-        }else {
-            constraintsMap.get(lhs).put(rhs, type);
+            constraintsMap.put(lhs, new HashMap<String,String>());
         }
+        constraintsMap.get(lhs).put(rhs,type);
     }
-
-    public void constructConstraintTrees() {
-
-        for(String lhs : constraintsMap.keySet()) {
-            put(lhs, new HashMap<String,Node>());
-        }
-
-        for(Entry<String,HashMap<String,String>> e : constraintsMap.entrySet()) {
-
-            for(Entry<String,String> cs : e.getValue().entrySet()) {
-
-                get(e.getKey()).put(cs.getKey(),new Node(cs.getKey()));
-                get(e.getKey()).get(e.getKey()).add
-            }
-
-        }
-
-
+    
+    public HashMap<String,String> getCourseConflicts(String course){
+        return constraintsMap.get(course);
+        
     }
-
+    public Collection<String> getCoursesWithConflicts(){
+        return constraintsMap.keySet();
+    }
 
     public void print() {
-        constructConstraintTrees();
-        //printMap();
-
-
-
-        }
-
-    private void printMap() {
-        for(Entry<String,HashMap<String,String>> e : constraintsMap.entrySet()) {
-            System.out.print(e.getKey() + " ");
-            for(Entry<String,String> n : e.getValue().entrySet()) {
-                System.out.print(n.getKey() + " ");
+        System.out.println("lhsConstraints: ");
+        for(Entry<String, HashMap<String,String>> ents : constraintsMap.entrySet()) {
+            
+            System.out.print(ents.getKey() + " ");
+            
+            for(Entry<String,String> entries : ents.getValue().entrySet()) {
+                System.out.print(entries.getValue() + " " + entries.getKey() + " ");
             }
             System.out.println();
         }
     }
+
     }
 
 

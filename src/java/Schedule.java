@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.Map.Entry;
 
 import course.*;
 
@@ -54,6 +55,9 @@ public class Schedule {
     public void setSemTaken(String course, int semester) {
         this.courses.setSemTaken(course, semester);
     }
+    public void printCoursesFitness() {
+        this.courses.printFitness();
+    }
     public int getNumConflicts() {
         return this.courses.getNumConflicts();
     }
@@ -72,23 +76,18 @@ public class Schedule {
             r.setSeed(seed);
         }
         
-        for(Course c : courses.values()) {
+        for(Entry<String, Course> c : courses.entrySet()) {
             semester = r.nextInt(11);
-            courses.setSemTaken(c.getName(),semester);
+            courses.setSemTaken(c.getKey(),semester);
         }
 
     }
     public void print() {
-        StringBuilder[] output = new StringBuilder[11];
-        for(int i = 0; i < output.length; i++) {
-            output[i] = new StringBuilder();
-        }
-        for(Course c : courses.values()) {
-            output[c.getSemTaken()].append(c.toString());
-        }
-        for(int i = 0; i < 11; i++) {
-            System.out.println(i + ". " + output[i]);
-        }
+        
+    }
+    public void solve() {
+        courses.solve();
+        print();
     }
 
 

@@ -1,10 +1,5 @@
 package schedule;
 
-import java.util.ArrayList;
-import java.util.Random;
-
-import course.Courses;
-
 public class CourseSchedule {
     private final String fallDays;   //days offered in the fall
     private final String springDays; //days offered in the spring
@@ -14,6 +9,11 @@ public class CourseSchedule {
         this.fallDays = fallDays;
         this.springDays = springDays;
         this.summerDays = summerDays;
+    }
+    public CourseSchedule(CourseSchedule other) {
+        this.fallDays = other.fallDays;
+        this.springDays = other.springDays;
+        this.summerDays = other.summerDays;
     }
     public String getDays(int semTaken) {
         if(semTaken % 3 == 0) {
@@ -28,26 +28,16 @@ public class CourseSchedule {
 
         return null;
     }
-    public ArrayList<Integer> schedsWithDash(){
-        ArrayList<Integer> retArr = new ArrayList<Integer>();
-        if(fallDays.endsWith("-")) {
-            retArr.add(0);
-        }
-        if(springDays.endsWith("-")) {
-            retArr.add(1);
-        }
-        if(summerDays.endsWith("-")) {
-            retArr.add(2);
-        }
-        return retArr.size() > 0 ? retArr : null;
+    public Character charAt(int semTaken, int index) {
+        return getDays(semTaken).charAt(index);
     }
-    public String getFallDays() {
-        return fallDays;
+    public Integer length(int semTaken) {
+        return getDays(semTaken).length();
+    }
+    public boolean hasOnline(int semTaken) {
+        return getDays(semTaken).endsWith("O");
     }
 
-    public String getSpringDays() {
-        return springDays;
-    }
     public Character getDayFromSchedule(int semTaken, int index) {
         return getDays(semTaken).charAt(index);
     }
@@ -55,8 +45,12 @@ public class CourseSchedule {
     public String getSummerDays() {
         return summerDays;
     }
-    public Character getRandomDayFromSchedule(int semTaken) {
-        Random r = new Random();
-        return getDays(semTaken).charAt(r.nextInt(getDays(semTaken).length() + 1));
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(fallDays + "\t");
+        sb.append(springDays + "\t");
+        sb.append(summerDays + "\t");
+        return sb.toString();
     }
 }
