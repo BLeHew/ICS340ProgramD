@@ -9,7 +9,7 @@ public class Fitness {
     private double[] semFitness = new double[11];
     
     public Fitness() {
-        Arrays.fill(semFitness, 100000);
+        Arrays.fill(semFitness, 1000);
     }
     public void update(int semester, double amount) {
         semFitness[semester] *= amount;

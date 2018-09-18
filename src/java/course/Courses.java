@@ -87,9 +87,7 @@ public class Courses extends HashMap<String,Course> {
         coursesWithConflicts = new HashSet<String>();
         
         for(Entry<String,Course> c : entrySet()) {
-            c.getValue().removeConflicts();
             if(sems[c.getValue().getSemTaken()].hasTooManyDays()) {
-                c.getValue().addConflict();
                 coursesWithConflicts.add(c.getKey());
                 coursesFitness.updateFitness(c.getKey(), c.getValue().getSemTaken(), SEMDAYCONFLICT);
             }
@@ -104,8 +102,6 @@ public class Courses extends HashMap<String,Course> {
                 switch(e.getValue()) {
                     case "<" : 
                         if(get(course).getSemTaken() >= get(e.getKey()).getSemTaken()) { 
-                            get(course).addConflict(); 
-                            get(e.getKey()).addConflict();
                             coursesWithConflicts.add(course);
                             coursesWithConflicts.add(e.getKey());
                             coursesFitness.updateFitness(e.getKey(), get(e.getKey()).getSemTaken(), CONSCONFLICT);
@@ -113,8 +109,6 @@ public class Courses extends HashMap<String,Course> {
                     }   
                     case "<=": 
                         if(get(course).getSemTaken() > get(e.getKey()).getSemTaken()) { 
-                            get(course).addConflict(); 
-                            get(e.getKey()).addConflict();
                             coursesWithConflicts.add(course);
                             coursesWithConflicts.add(e.getKey());
                             coursesFitness.updateFitness(e.getKey(), get(e.getKey()).getSemTaken(), CONSCONFLICT);
@@ -127,7 +121,6 @@ public class Courses extends HashMap<String,Course> {
         
         for(Entry<String,Course> c : entrySet()) {
             if(c.getValue().getDayTaken() == null || c.getValue().getDayTaken() == '-') {
-                c.getValue().addConflict();
                 coursesWithConflicts.add(c.getKey());
                 coursesFitness.updateFitness(c.getKey(),get(c.getKey()).getSemTaken(),DAYCONFLICT);
             }

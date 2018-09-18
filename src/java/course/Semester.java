@@ -67,7 +67,7 @@ public class Semester {
                         }
 
             }else {
-                numTries *= course.getValue().length(semNum1);
+                numTries *= course.getValue().length(semNum);
                 coursesToCheck.add(course.getKey());
 
             }
