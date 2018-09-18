@@ -1,5 +1,6 @@
 package fitness;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Random;
@@ -9,10 +10,10 @@ public class CoursesFitness{
     public void add(String course) {
         courseFitMap.put(course, new Fitness());
     }
-    public int getHealthiestSemester(String course) {
-        return courseFitMap.get(course).getHealthiestSemester();
+    public int getHealthiestSemester(String course,ArrayList<Integer> nonFullSemesters) {
+        return courseFitMap.get(course).getHealthiestSemester(nonFullSemesters);
     }
-    public void updateFitness(String course,int semester, int amount) {
+    public void updateFitness(String course,int semester, double amount) {
         courseFitMap.get(course).update(semester, amount);
     }
     public void resetFitness(String course) {
@@ -30,5 +31,8 @@ public class CoursesFitness{
             sb.append(e.getKey() + " " +  e.getValue() + "\n");
         }
         return sb.toString();
+    }
+    public int getHealthiestSemester(String c) {
+        return courseFitMap.get(c).getHealthiestSemester();
     }
 }   

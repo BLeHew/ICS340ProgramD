@@ -55,9 +55,6 @@ public class Schedule {
     public void setSemTaken(String course, int semester) {
         this.courses.setSemTaken(course, semester);
     }
-    public void printCoursesFitness() {
-        this.courses.printFitness();
-    }
     public int getNumConflicts() {
         return this.courses.getNumConflicts();
     }
@@ -83,11 +80,10 @@ public class Schedule {
 
     }
     public void print() {
-        
+        System.out.println(courses);
     }
     public void solve() {
         courses.solve();
-        print();
     }
 
 
