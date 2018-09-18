@@ -27,6 +27,9 @@ public class Semester {
     public boolean hasTooManyDays() {
         return courseSchedules.size() > rightAmountOfDays();
     }
+    public boolean canAddMoreDays() {
+        return courseSchedules.size() < rightAmountOfDays();
+    }
     public void resetAssignedDays() {
         assignedDays = null;
     }
@@ -55,11 +58,12 @@ public class Semester {
             if(course.getValue().hasOnline(semNum)) {
                 assignedDays.put(course.getKey(),'O');
             }else if(course.getValue().length(semNum) == 1) {
-                assignedDays.put(course.getKey(),course.getValue().charAt(semNum,0));
+                
                         if(daysTaken.contains(course.getValue().charAt(semNum,0))) {
-                             return;
+                             assignedDays.put(course.getKey(), '-');
                         }else {
                              daysTaken.add(course.getValue().charAt(semNum,0));
+                             assignedDays.put(course.getKey(),course.getValue().charAt(semNum,0));
                         }
 
             }else {
@@ -95,7 +99,9 @@ public class Semester {
 
 
     }
-
+    public int numCourses() {
+        return courseSchedules.size();
+    }
     public void remove(String course) {
 
         courseSchedules.remove(course);
@@ -113,5 +119,8 @@ public class Semester {
           }else
               return 2;
       }
+    public int getSemNum() {
+        return semNum;
+    }
 
 }

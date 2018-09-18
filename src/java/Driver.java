@@ -34,7 +34,6 @@ public class Driver {
         for(Entry<String, Course> c : test.getCourses().entrySet()) {
             s.setSemTaken(c.getKey(), c.getValue().getSemTaken());
         }*/
-        s.printCoursesFitness();
         s.solve();
         
         System.out.println();

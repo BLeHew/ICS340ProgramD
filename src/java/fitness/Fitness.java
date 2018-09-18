@@ -1,6 +1,7 @@
 package fitness;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -10,21 +11,18 @@ public class Fitness {
     public Fitness() {
         Arrays.fill(semFitness, 100000);
     }
-    public void update(int semester, int amount) {
-        semFitness[semester] *= .9999;
+    public void update(int semester, double amount) {
+        semFitness[semester] *= amount;
     }
     public void reset() {
         Arrays.fill(semFitness, 100000);
     }
-    public int getHealthiestSemester() {
-
-        Random r = new Random();
-        int next = r.nextInt(11);
-        if(semFitness[next] > 50000) {
-            return next;
-        }
-        return r.nextInt(11);
-        
+    public int getHealthiestSemester(ArrayList<Integer> nonFullSemesters) {
+       int best = 0;
+       for(Integer i : nonFullSemesters) {
+           best = semFitness[i] > semFitness[best] ? i : best;
+       }
+       return best;
     }
     @Override
     public String toString() {
@@ -34,5 +32,13 @@ public class Fitness {
             sb.append(dec.format(d) + " ");
         }
         return sb.toString();
+    }
+    public int getHealthiestSemester() {
+        int maxAt = 0;
+
+        for (int i = 0; i < semFitness.length; i++) {
+            maxAt = semFitness[i] > semFitness[maxAt] ? i : maxAt;
+        }
+        return maxAt;
     }
 }
