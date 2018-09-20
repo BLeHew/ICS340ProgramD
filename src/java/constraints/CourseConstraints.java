@@ -19,9 +19,22 @@ public class CourseConstraints{
     public boolean hasConstraints(String course) {
         return constraintsMap.containsKey(course);
     }
+    public boolean coursesHaveConflict(String lhs, int lhsSem, String rhs, int rhsSem) {
+        if(constraintsMap.containsKey(lhs)) {
+            if(constraintsMap.get(lhs).get(rhs).equals("<")) {
+                if(lhsSem >= rhsSem) {
+                    return true;
+                }
+            }else {
+                if(lhsSem > rhsSem) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
     public HashMap<String,String> getCourseConflicts(String course){
-        return constraintsMap.get(course);
-        
+        return constraintsMap.get(course);       
     }
     public Collection<String> getCoursesWithConflicts(){
         return constraintsMap.keySet();

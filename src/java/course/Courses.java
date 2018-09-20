@@ -106,6 +106,12 @@ public class Courses extends HashMap<String,Course> {
                 HashMap<String, String> courseConflicts = courseConstraints.getCourseConflicts(c.getKey());
 
                 for(Entry<String,String> e : courseConflicts.entrySet()) {
+                    if(courseConstraints.coursesHaveConflict(c.getKey(), c.getValue().getSemTaken(), e.getKey(), get(e.getKey()).getSemTaken())) {
+                        coursesWithConflicts.add(c.getKey());
+                        coursesWithConflicts.add(e.getKey());
+                        coursesFitness.updateFitness(e.getKey(), get(e.getKey()).getSemTaken(), CONSCONFLICT);
+                    }
+                    /*
                         if(e.getValue().equals("<") && (get(c.getKey()).getSemTaken() >= get(e.getKey()).getSemTaken())) {
                             
                             get(c.getKey()).addConflict();
@@ -121,6 +127,7 @@ public class Courses extends HashMap<String,Course> {
                             coursesWithConflicts.add(e.getKey());
                             coursesFitness.updateFitness(e.getKey(), get(e.getKey()).getSemTaken(), CONSCONFLICT);
                         }
+                        */
                 }
                 
             }
@@ -156,7 +163,6 @@ public class Courses extends HashMap<String,Course> {
     public void solve() {
         int i = 0;
         long msStart = System.currentTimeMillis();
-        System.out.println(this);
         while(!coursesWithConflicts.isEmpty()) {
             for(String c : coursesWithConflicts) {
                 int nextSem;
@@ -173,11 +179,13 @@ public class Courses extends HashMap<String,Course> {
         }
         
         long msEnd = System.currentTimeMillis();
+        
+        System.out.println(courseConstraints.coursesHaveConflict("Math120", 5, "ICS140", 4));
+        
 
         System.out.println("Total time taken: " + (msEnd - msStart));
         System.out.println(i);
         System.out.println(this);
-        System.out.println(coursesFitness);
         checkConflicts();
         System.out.println(this);
         
