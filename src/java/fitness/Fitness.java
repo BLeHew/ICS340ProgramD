@@ -11,6 +11,22 @@ public class Fitness {
     public Fitness() {
         Arrays.fill(semFitness, 1000);
     }
+    public Fitness(ArrayList<Integer> badSems) {
+        Arrays.fill(semFitness, 1000);
+        for(Integer i : badSems) {
+            removeSems(i);
+        }
+    }
+    public Fitness(String[] splitString) {
+        for(int i = 1; i < splitString.length; i++) {
+            semFitness[i - 1] = Double.parseDouble(splitString[i]);
+        }
+    }
+    private void removeSems(Integer i) {
+        for(int j = i; j < semFitness.length ; j+= 3) {
+            semFitness[j] *= 0;
+        }
+    }
     public void update(int semester, double amount) {
         semFitness[semester] *= amount;
     }
@@ -18,10 +34,11 @@ public class Fitness {
         Arrays.fill(semFitness, 100000);
     }
     public int getHealthiestSemester(ArrayList<Integer> nonFullSemesters) {
-       int best = 0;
-       for(Integer i : nonFullSemesters) {
-           best = semFitness[i] > semFitness[best] ? i : best;
+       int best = nonFullSemesters.get(0);
+       for(int j = 1; j < nonFullSemesters.size() ; j++) {
+           best = semFitness[j] > semFitness[best] ? j : best;
        }
+       
        return best;
     }
     @Override

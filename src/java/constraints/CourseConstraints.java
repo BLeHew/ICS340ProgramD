@@ -16,7 +16,9 @@ public class CourseConstraints{
         }
         constraintsMap.get(lhs).put(rhs,type);
     }
-    
+    public boolean hasConstraints(String course) {
+        return constraintsMap.containsKey(course);
+    }
     public HashMap<String,String> getCourseConflicts(String course){
         return constraintsMap.get(course);
         

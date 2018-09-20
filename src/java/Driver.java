@@ -10,42 +10,23 @@ import schedule.CourseSchedule;
 public class Driver {
     public static void main(String args[]) {
         
-        FileProcessor fp = new FileProcessor();
         FileProcessor fp1 = new FileProcessor();
 
-        //Courses cs = fp.getCourses();
-        
 
-
-        Schedule test = new Schedule(fp.getCourses(),1);
-        test.checkConflicts();
-        test.print();
         System.out.println();
         Schedule s  = new Schedule(fp1.getCourses());
                     
         s.assignSemesters();
         s.checkConflicts();
-        s.print();
+        //s.print();
         
         
         
         System.out.println();
-        /*
-        for(Entry<String, Course> c : test.getCourses().entrySet()) {
-            s.setSemTaken(c.getKey(), c.getValue().getSemTaken());
-        }*/
+
         s.solve();
         
-        System.out.println();
-        
-        
-        //System.out.println();
-        
-        //s.checkConflicts();
-
-        
-       
-        
+        System.out.println();      
         
     }
 }

@@ -1,5 +1,7 @@
 package schedule;
 
+import java.util.ArrayList;
+
 public class CourseSchedule {
     private final String fallDays;   //days offered in the fall
     private final String springDays; //days offered in the spring
@@ -27,6 +29,19 @@ public class CourseSchedule {
         }
 
         return null;
+    }
+    public ArrayList<Integer> getDashes(){
+        ArrayList<Integer> badSems = new ArrayList<Integer>();
+        if(fallDays.endsWith("-")) {
+            badSems.add(0);
+        }
+        if(springDays.endsWith("-")) {
+            badSems.add(1);
+        }
+        if(summerDays.endsWith("-")) {
+            badSems.add(2);
+        }
+        return badSems;
     }
     public Character charAt(int semTaken, int index) {
         return getDays(semTaken).charAt(index);
