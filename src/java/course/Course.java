@@ -27,7 +27,7 @@ public class Course {
     }
     @Override
     public String toString() {
-        return numConflicts + " " +  day + "\t";
+        return day + "\t";
     }
 
     public Character getDayTaken() {

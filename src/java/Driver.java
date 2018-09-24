@@ -5,28 +5,52 @@ import java.util.Random;
 
 import course.Course;
 import course.Courses;
+import fitness.CoursesFitness;
 import schedule.CourseSchedule;
 
 public class Driver {
     public static void main(String args[]) {
         
         FileProcessor fp1 = new FileProcessor();
-
-
+        
         System.out.println();
-        Schedule s  = new Schedule(fp1.getCourses());
-                    
+        
+        Courses s = new Courses(fp1.getCourses()); 
+        /*
         s.assignSemesters();
         s.checkConflicts();
-        //s.print();
-        
-        
-        
-        System.out.println();
-
+        long msStart = System.currentTimeMillis();
         s.solve();
+        long msEnd = System.currentTimeMillis() - msStart;
+        System.out.println(s);
+        System.out.println(msEnd);
+        System.out.println(CoursesFitness.getInstance());
+        */
         
-        System.out.println();      
+      
+        long best = Long.MAX_VALUE;
+        long worst = Long.MIN_VALUE;
+        long average = 0;
+        
+        for(int i = 1; i < 100; i++) {
+            s.assignSemesters();
+            s.checkConflicts();
+            long msStart = System.currentTimeMillis();
+            s.solve();
+            long msEnd = System.currentTimeMillis() - msStart;
+            
+            if(msEnd < best && msEnd > 0) {
+                best = msEnd;
+            }
+            if(msEnd > worst) {
+                worst = msEnd;
+            }
+            average = average * (i - 1)/i + msEnd / i;
+            System.out.println(i + " Current: " + msEnd + "\tBest: " + best + "\tWorst: " + worst + "\tAverage: " + average);
+        }
+        
+        
+              
         
     }
 }

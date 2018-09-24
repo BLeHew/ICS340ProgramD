@@ -1,54 +1,36 @@
 package fitness;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map.Entry;
-import java.util.Random;
-import java.util.Scanner;
+
+import course.Course;
 
 public class CoursesFitness{
     private HashMap<String,Fitness> courseFitMap = new HashMap<String,Fitness>();
     
-    private Scanner fileScanner;
+    private static CoursesFitness singleton = new CoursesFitness();
     
-    public CoursesFitness(File fitnessFile) {
-        if(createFitnessFile(fitnessFile)) {
-            while(fileScanner.hasNextLine()) {
-                String[] splitString = fileScanner.nextLine().split("\\s+");
-                
-                courseFitMap.put(splitString[0], new Fitness(splitString));
-            }
-        }
+    private CoursesFitness() {
         
     }
-    public CoursesFitness() {
+    public void add(String string, Fitness fitness) {
+        courseFitMap.put(string, fitness);
         
     }
-    public boolean createFitnessFile(File fitnessFile) {
-        try {
-            fileScanner = new Scanner(fitnessFile);
-            return true;
-        } catch ( FileNotFoundException x ) {
-            x.printStackTrace();
-            return false;
-        }
+    public static CoursesFitness getInstance() {
+        return singleton;
     }
-    public void add(String course,ArrayList<Integer> badSems) {
-        if(!courseFitMap.containsKey(course)) {
-            courseFitMap.put(course, new Fitness(badSems));
-        }
-        
-    }
-    public void printCourseStats() {
-        System.out.println("Best Semesters for each course: " );
-        for(Entry<String,Fitness> e : courseFitMap.entrySet()) {
-            System.out.println(e.getKey() + " " + e.getValue().getHealthiestSemester());
-        }
+    
+    public void trimBadSems(String course,ArrayList<Integer> badSems) {
+       courseFitMap.get(course).trimBadSems(badSems);
     }
     public int getHealthiestSemester(String course,ArrayList<Integer> nonFullSemesters) {
         return courseFitMap.get(course).getHealthiestSemester(nonFullSemesters);
+    }
+    public void updateFitness(Entry<String,Course> entry, double amount) {
+        updateFitness(entry.getKey(),entry.getValue().getSemTaken(),amount);
     }
     public void updateFitness(String course,int semester, double amount) {
         courseFitMap.get(course).update(semester, amount);
@@ -72,4 +54,6 @@ public class CoursesFitness{
     public int getHealthiestSemester(String c) {
         return courseFitMap.get(c).getHealthiestSemester();
     }
+    
+
 }   

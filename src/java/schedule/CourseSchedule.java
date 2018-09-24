@@ -6,17 +6,24 @@ public class CourseSchedule {
     private final String fallDays;   //days offered in the fall
     private final String springDays; //days offered in the spring
     private final String summerDays; //days offered in the summer
+    private final ArrayList<Integer> badSems;
 
     public CourseSchedule(String fallDays, String springDays,String summerDays) {
         this.fallDays = fallDays;
         this.springDays = springDays;
         this.summerDays = summerDays;
+        badSems = new ArrayList<Integer>();
+        if(fallDays.endsWith("-")) {
+            badSems.add(0);
+        }
+        if(springDays.endsWith("-")) {
+            badSems.add(1);
+        }
+        if(summerDays.endsWith("-")) {
+            badSems.add(2);
+        }
     }
-    public CourseSchedule(CourseSchedule other) {
-        this.fallDays = other.fallDays;
-        this.springDays = other.springDays;
-        this.summerDays = other.summerDays;
-    }
+
     public String getDays(int semTaken) {
         if(semTaken % 3 == 0) {
             return fallDays;
@@ -31,16 +38,6 @@ public class CourseSchedule {
         return null;
     }
     public ArrayList<Integer> getDashes(){
-        ArrayList<Integer> badSems = new ArrayList<Integer>();
-        if(fallDays.endsWith("-")) {
-            badSems.add(0);
-        }
-        if(springDays.endsWith("-")) {
-            badSems.add(1);
-        }
-        if(summerDays.endsWith("-")) {
-            badSems.add(2);
-        }
         return badSems;
     }
     public Character charAt(int semTaken, int index) {

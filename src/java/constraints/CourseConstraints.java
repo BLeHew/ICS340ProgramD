@@ -8,7 +8,16 @@ import conflict.Conflict;
 public class CourseConstraints{
 
 
-    HashMap<String,HashMap<String,String>> constraintsMap = new HashMap<String,HashMap<String,String>>();
+    public static HashMap<String,HashMap<String,String>> constraintsMap = new HashMap<String,HashMap<String,String>>();
+    
+    private static CourseConstraints singleton = new CourseConstraints();
+    
+    private CourseConstraints() {
+        
+    }
+    public static CourseConstraints getInstance() {
+        return singleton;
+    }
 
     public void addConstraint(String lhs,String type, String rhs) {
         if(!constraintsMap.containsKey(lhs)) {

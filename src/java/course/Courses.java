@@ -11,45 +11,20 @@ import schedule.*;
 
 public class Courses extends HashMap<String,Course> {
 
-    public static CourseSchedules courseSchedules = new CourseSchedules();
-    private CourseConstraints courseConstraints = new CourseConstraints();
-    //private CoursesFitness coursesFitness = new CoursesFitness(new File("courseFitness"));
-    private CoursesFitness coursesFitness = new CoursesFitness();
-    
     private HashSet<String> coursesWithConflicts;
     
-    private int numConflicts = 0;
-
     private Semester[] sems = new Semester[11];
 
-    public static final long SEED = 200000;
-    public static final Random rand = new Random();
-    
-    public static final double CONSCONFLICT = .99;
-    public static final double DAYCONFLICT = .999;
+    public static final double CONSCONFLICT = .999;
+    public static final double DAYCONFLICT = .99999;
+    public static final double NOCONFLICT = 1.000001;
     public static final double DOMAINCONFLICT = 0;
 
-    public Courses() {
+    public Courses(HashMap<String,Course> courses) {
+        this.putAll(courses);
         for(int i = 0; i < 11; i++) {
             sems[i] = new Semester(i);
         }
-    }
-    public void put(String c, String fallDays, String springDays, String summerDays) {
-        put(c,new Course());
-        courseSchedules.put(c, new CourseSchedule(fallDays, springDays, summerDays));
-        coursesFitness.add(c,courseSchedules.get(c).getDashes());
-        
-    }
-
-    public void put(String lhs, String type, String rhs) {
-        courseConstraints.addConstraint(lhs, type, rhs);
-        if(type.equals("<")) {
-            coursesFitness.updateFitness(lhs, 10, DOMAINCONFLICT);
-            coursesFitness.updateFitness(rhs, 0, DOMAINCONFLICT);
-        }
-    }
-    public int getNumConflicts() {
-        return numConflicts;
     }
     public void assignSemesters() {
         int semester;
@@ -71,7 +46,7 @@ public class Courses extends HashMap<String,Course> {
         }
 
        get(course).setSemTaken(sem);
-       sems[sem].add(course,courseSchedules.get(course));
+       sems[sem].add(course,CourseSchedules.getInstance().get(course));
 
         
        if(sems[sem].getAssignedDays() != null) {
@@ -90,9 +65,8 @@ public class Courses extends HashMap<String,Course> {
         return nonFullSemesters;
     }
     private void getAssignedDaysFromSemesters(int sem) {
-        for(Entry<String,Character> e : sems[sem].getAssignedDays().entrySet()) {
-            get(e.getKey()).setDay(e.getValue());
-        }
+        for(Entry<String,Character> e : sems[sem].getAssignedDays().entrySet()) 
+            get(e.getKey()).setDay(e.getValue());      
     }
     public boolean hasConflicts() {
         return coursesWithConflicts.size() > 0;
@@ -100,48 +74,34 @@ public class Courses extends HashMap<String,Course> {
     public void checkConflicts() {
         coursesWithConflicts = new HashSet<String>();
         
-        for(Entry<String,Course> c : entrySet()) {
-            c.getValue().removeConflicts();
-            if(courseConstraints.hasConstraints(c.getKey())) {
-                HashMap<String, String> courseConflicts = courseConstraints.getCourseConflicts(c.getKey());
+        for(Entry<String,Course> course : entrySet()) {
+            if(CourseConstraints.getInstance().hasConstraints(course.getKey())) {
+                HashMap<String, String> courseConflicts = CourseConstraints.getInstance().getCourseConflicts(course.getKey());
 
-                for(Entry<String,String> e : courseConflicts.entrySet()) {
-                    if(courseConstraints.coursesHaveConflict(c.getKey(), c.getValue().getSemTaken(), e.getKey(), get(e.getKey()).getSemTaken())) {
-                        coursesWithConflicts.add(c.getKey());
-                        coursesWithConflicts.add(e.getKey());
-                        coursesFitness.updateFitness(e.getKey(), get(e.getKey()).getSemTaken(), CONSCONFLICT);
+                for(Entry<String,String> rhsCourse : courseConflicts.entrySet()) {
+                    if(CourseConstraints.getInstance().coursesHaveConflict(
+                        course.getKey(), 
+                        course.getValue().getSemTaken(), 
+                        rhsCourse.getKey(), 
+                        get(rhsCourse.getKey()).getSemTaken())) {
+                        
+                        coursesWithConflicts.add(course.getKey());
+                        coursesWithConflicts.add(rhsCourse.getKey());
+                        CoursesFitness.getInstance().updateFitness(rhsCourse.getKey(), get(rhsCourse.getKey()).getSemTaken(), CONSCONFLICT);
+                        CoursesFitness.getInstance().updateFitness(course, CONSCONFLICT);
                     }
-                    /*
-                        if(e.getValue().equals("<") && (get(c.getKey()).getSemTaken() >= get(e.getKey()).getSemTaken())) {
-                            
-                            get(c.getKey()).addConflict();
-                            get(e.getKey()).addConflict();
-                            coursesWithConflicts.add(c.getKey());
-                            coursesWithConflicts.add(e.getKey());
-                            coursesFitness.updateFitness(e.getKey(), get(e.getKey()).getSemTaken(), CONSCONFLICT);
-                        }
-                        if(e.getValue().equals("<=") && (get(c.getKey()).getSemTaken() > get(e.getKey()).getSemTaken())) {
-                            get(c.getKey()).addConflict();
-                            get(e.getKey()).addConflict();
-                            coursesWithConflicts.add(c.getKey());
-                            coursesWithConflicts.add(e.getKey());
-                            coursesFitness.updateFitness(e.getKey(), get(e.getKey()).getSemTaken(), CONSCONFLICT);
-                        }
-                        */
                 }
                 
             }
-            boolean addDayConflict = false;
-            if(sems[c.getValue().getSemTaken()].hasTooManyDays()) {
-                addDayConflict = true;
+            if(sems[course.getValue().getSemTaken()].hasTooManyDays()) {
+                coursesWithConflicts.add(course.getKey());
+                CoursesFitness.getInstance().updateFitness(course.getKey(),get(course.getKey()).getSemTaken(),DAYCONFLICT);
+            }else if(course.getValue().getDayTaken() == null || course.getValue().getDayTaken() == '-') {
+                coursesWithConflicts.add(course.getKey());
+                CoursesFitness.getInstance().updateFitness(course.getKey(),get(course.getKey()).getSemTaken(),DAYCONFLICT);
             }
-            if(c.getValue().getDayTaken() == null || c.getValue().getDayTaken() == '-') {
-                addDayConflict = true;
-            }
-            if(addDayConflict) {
-                get(c.getKey()).addConflict();
-                coursesWithConflicts.add(c.getKey());
-                coursesFitness.updateFitness(c.getKey(),get(c.getKey()).getSemTaken(),DAYCONFLICT);
+            if(!coursesWithConflicts.contains(course.getKey())) {
+                CoursesFitness.getInstance().updateFitness(course.getKey(),get(course.getKey()).getSemTaken(),NOCONFLICT);
             }
         }
     }
@@ -161,34 +121,23 @@ public class Courses extends HashMap<String,Course> {
         return output.toString();
     }
     public void solve() {
-        int i = 0;
-        long msStart = System.currentTimeMillis();
+        int i = 1;
         while(!coursesWithConflicts.isEmpty()) {
-            for(String c : coursesWithConflicts) {
-                int nextSem;
-                if(getNonFullSemesters().size() > 0) {
-                    nextSem = coursesFitness.getHealthiestSemester(c,getNonFullSemesters());
-                }else {
-                    nextSem = coursesFitness.getHealthiestSemester(c);
-                }
-                
-                setSemTaken(c,nextSem);   
+
+            for(String course : coursesWithConflicts) {
+               setSemTaken(course,
+                   CoursesFitness.getInstance().getHealthiestSemester(
+                       course,getNonFullSemesters()));
             }
             i++;
             checkConflicts();
         }
-        
-        long msEnd = System.currentTimeMillis();
-        
-        System.out.println(courseConstraints.coursesHaveConflict("Math120", 5, "ICS140", 4));
-        
 
-        System.out.println("Total time taken: " + (msEnd - msStart));
-        System.out.println(i);
-        System.out.println(this);
-        checkConflicts();
-        System.out.println(this);
         
+        
+    }
+    public void resetFitness() {
+        CoursesFitness.getInstance().resetAllFitness();
         
     }
 
