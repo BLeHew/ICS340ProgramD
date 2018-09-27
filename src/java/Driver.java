@@ -16,7 +16,7 @@ public class Driver {
         System.out.println();
         
         Courses s = new Courses(fp1.getCourses()); 
-        /*
+        
         s.assignSemesters();
         s.checkConflicts();
         long msStart = System.currentTimeMillis();
@@ -24,14 +24,13 @@ public class Driver {
         long msEnd = System.currentTimeMillis() - msStart;
         System.out.println(s);
         System.out.println(msEnd);
-        System.out.println(CoursesFitness.getInstance());
-        */
+        
         
       
         long best = Long.MAX_VALUE;
         long worst = Long.MIN_VALUE;
         long average = 0;
-        
+        /*
         for(int i = 1; i < 100; i++) {
             s.assignSemesters();
             s.checkConflicts();
@@ -49,7 +48,7 @@ public class Driver {
             System.out.println(i + " Current: " + msEnd + "\tBest: " + best + "\tWorst: " + worst + "\tAverage: " + average);
         }
         
-        
+        */
               
         
     }

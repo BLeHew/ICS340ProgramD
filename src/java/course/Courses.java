@@ -26,6 +26,9 @@ public class Courses extends HashMap<String,Course> {
             sems[i] = new Semester(i);
         }
     }
+    public Courses(Courses courses) {
+        this.putAll(courses);
+    }
     public void assignSemesters() {
         int semester;
         Random r = new Random();
@@ -39,20 +42,19 @@ public class Courses extends HashMap<String,Course> {
     public void setSemTaken(String course, int sem) {
 
        if(get(course).getSemTaken() != null) {
-            sems[get(course).getSemTaken()].remove(course);
-            if(sems[get(course).getSemTaken()].getAssignedDays() != null) {
+            sems[get(course).getSemTaken()].remove(get(course));
+            if(sems[get(course).getSemTaken()].hasRightAmountOfDays()) {
                 getAssignedDaysFromSemesters(get(course).getSemTaken());
             }
         }
 
        get(course).setSemTaken(sem);
-       sems[sem].add(course,CourseSchedules.getInstance().get(course));
+       sems[sem].add(get(course));
 
         
-       if(sems[sem].getAssignedDays() != null) {
+       if(sems[sem].hasRightAmountOfDays()) {
             getAssignedDaysFromSemesters(sem);
         }
-
     }
     private ArrayList<Integer> getNonFullSemesters() {
         ArrayList<Integer> nonFullSemesters = new ArrayList<Integer>();
@@ -65,8 +67,8 @@ public class Courses extends HashMap<String,Course> {
         return nonFullSemesters;
     }
     private void getAssignedDaysFromSemesters(int sem) {
-        for(Entry<String,Character> e : sems[sem].getAssignedDays().entrySet()) 
-            get(e.getKey()).setDay(e.getValue());      
+        for(Entry<String,Course> e : sems[sem].getSemCourses().entrySet()) 
+            get(e.getKey()).setDay(e.getValue().getDayTaken());      
     }
     public boolean hasConflicts() {
         return coursesWithConflicts.size() > 0;
@@ -74,70 +76,57 @@ public class Courses extends HashMap<String,Course> {
     public void checkConflicts() {
         coursesWithConflicts = new HashSet<String>();
         
-        for(Entry<String,Course> course : entrySet()) {
-            if(CourseConstraints.getInstance().hasConstraints(course.getKey())) {
-                HashMap<String, String> courseConflicts = CourseConstraints.getInstance().getCourseConflicts(course.getKey());
+        for(Course course : values()) {
+            if(CourseConstraints.getInstance().hasConstraints(course)) {
+                HashMap<String, String> courseConflicts = CourseConstraints.getInstance().getCourseConflicts(course);
 
                 for(Entry<String,String> rhsCourse : courseConflicts.entrySet()) {
-                    if(CourseConstraints.getInstance().coursesHaveConflict(
-                        course.getKey(), 
-                        course.getValue().getSemTaken(), 
-                        rhsCourse.getKey(), 
-                        get(rhsCourse.getKey()).getSemTaken())) {
+                    if(CourseConstraints.getInstance().coursesHaveConflict(course, get(rhsCourse.getKey()))) {
                         
-                        coursesWithConflicts.add(course.getKey());
+                        coursesWithConflicts.add(course.getName());
                         coursesWithConflicts.add(rhsCourse.getKey());
-                        CoursesFitness.getInstance().updateFitness(rhsCourse.getKey(), get(rhsCourse.getKey()).getSemTaken(), CONSCONFLICT);
-                        CoursesFitness.getInstance().updateFitness(course, CONSCONFLICT);
+                        course.getFitness().update(course.getSemTaken(), CONSCONFLICT);
+                        get(rhsCourse.getKey()).getFitness().update(get(rhsCourse.getKey()).getSemTaken(), CONSCONFLICT);
                     }
                 }
                 
             }
-            if(sems[course.getValue().getSemTaken()].hasTooManyDays()) {
-                coursesWithConflicts.add(course.getKey());
-                CoursesFitness.getInstance().updateFitness(course.getKey(),get(course.getKey()).getSemTaken(),DAYCONFLICT);
-            }else if(course.getValue().getDayTaken() == null || course.getValue().getDayTaken() == '-') {
-                coursesWithConflicts.add(course.getKey());
-                CoursesFitness.getInstance().updateFitness(course.getKey(),get(course.getKey()).getSemTaken(),DAYCONFLICT);
+            if(sems[course.getSemTaken()].hasTooManyDays()) {
+                coursesWithConflicts.add(course.getName());
+                course.getFitness().update(course.getSemTaken(),DAYCONFLICT);
+            }else if(course.getDayTaken() == null || course.getDayTaken() == '-') {
+                coursesWithConflicts.add(course.getName());
+                course.getFitness().update(course.getSemTaken(),DAYCONFLICT);
             }
-            if(!coursesWithConflicts.contains(course.getKey())) {
-                CoursesFitness.getInstance().updateFitness(course.getKey(),get(course.getKey()).getSemTaken(),NOCONFLICT);
+            if(!coursesWithConflicts.contains(course.getName())) {
+                course.getFitness().update(course.getSemTaken(),NOCONFLICT);
             }
         }
     }
     @Override
     public String toString() {
-        StringBuilder[] semOutput = new StringBuilder[11];
         StringBuilder output = new StringBuilder();
-        for(int i = 0; i < semOutput.length; i++) {
-            semOutput[i] = new StringBuilder();
-        }
-        for(Entry<String, Course> c : entrySet()) {
-            semOutput[c.getValue().getSemTaken()].append(c.getKey() + "\t" + c.getValue());
-        }
-        for(int i = 0; i < 11; i++) {
-            output.append(i + ". " + semOutput[i] + "\n");
+        
+        for(Semester s : sems) {
+            output.append(s + "\n");
         }
         return output.toString();
     }
     public void solve() {
         int i = 1;
         while(!coursesWithConflicts.isEmpty()) {
-
+            if(i % 10000 == 0) {
+                System.out.println(i);
+                System.out.println(this);
+            }
             for(String course : coursesWithConflicts) {
-               setSemTaken(course,
-                   CoursesFitness.getInstance().getHealthiestSemester(
-                       course,getNonFullSemesters()));
+               setSemTaken(course,get(course).getFitness().getHealthiestSemester(getNonFullSemesters()));
             }
             i++;
             checkConflicts();
         }
 
         
-        
-    }
-    public void resetFitness() {
-        CoursesFitness.getInstance().resetAllFitness();
         
     }
 

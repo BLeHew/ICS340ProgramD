@@ -6,40 +6,36 @@ import schedule.*;
 
 public class Semester {
     private final int semNum;
-    private HashSet<String> coursesToCheck;
+    private HashSet<Course> coursesToCheck;
     private HashSet<Character> daysTaken;
 
-    private HashMap<String,Character> assignedDays;
-    private HashMap<String,CourseSchedule> courseSchedules = new HashMap<>();
-
+    //private HashMap<String,Character> assignedDays;
+    //private HashMap<String,CourseSchedule> courseSchedules = new HashMap<>();
+    
+    private HashMap<String, Course> semCourses = new HashMap<>();
+    
     private int numTries;
 
     public Semester(int semNum) {
         this.semNum = semNum;
         
     }
-    public HashMap<String,Character> getAssignedDays(){
-        return assignedDays;
+    public HashMap<String, Course> getSemCourses(){
+        return semCourses;
     }
     public boolean hasRightAmountOfDays() {
-        return courseSchedules.size() == rightAmountOfDays();
+        return semCourses.size() == rightAmountOfDays();
     }
     public boolean hasTooManyDays() {
-        return courseSchedules.size() > rightAmountOfDays();
+        return semCourses.size() > rightAmountOfDays();
     }
     public boolean canAddMoreDays() {
-        return courseSchedules.size() < rightAmountOfDays();
+        return semCourses.size() < rightAmountOfDays();
     }
-    public void resetAssignedDays() {
-        assignedDays = null;
-    }
-    public boolean contains(String course) {
-        return courseSchedules.containsKey(course);
-    }
-    public void add(String course,CourseSchedule schedule) {
-        courseSchedules.put(course,schedule);
+    public void add(Course c) {
+        semCourses.put(c.getName(),c);
 
-        if(courseSchedules.size() == rightAmountOfDays()) {
+        if(semCourses.size() == rightAmountOfDays()) {
             assignDays();
         }
         
@@ -47,28 +43,26 @@ public class Semester {
     }
     public void assignDays() {
 
-        assignedDays = new HashMap<String,Character>();
-        
         numTries = 1;
         daysTaken = new HashSet<>();
-        coursesToCheck = new HashSet<>();
+        coursesToCheck = new HashSet<Course>();
 
         
-        for(Entry<String,CourseSchedule> course : courseSchedules.entrySet()) {
-            if(course.getValue().hasOnline(semNum)) {
-                assignedDays.put(course.getKey(),'O');
-            }else if(course.getValue().length(semNum) == 1) {
+        for(Course c : semCourses.values()) {
+            if(c.getSchedule().hasOnline(semNum)) {
+                c.setDay('O');
+            }else if(c.getSchedule().length(semNum) == 1) {
                 
-                        if(daysTaken.contains(course.getValue().charAt(semNum,0))) {
-                             assignedDays.put(course.getKey(), '-');
+                        if(daysTaken.contains(c.getSchedule().charAt(semNum,0))) {
+                             c.setDay('-');
                         }else {
-                             daysTaken.add(course.getValue().charAt(semNum,0));
-                             assignedDays.put(course.getKey(),course.getValue().charAt(semNum,0));
+                             daysTaken.add(c.getSchedule().charAt(semNum,0));
+                             c.setDay(c.getSchedule().charAt(semNum,0));
                         }
 
             }else {
-                numTries *= course.getValue().length(semNum);
-                coursesToCheck.add(course.getKey());
+                numTries *= c.getSchedule().length(semNum);
+                coursesToCheck.add(c);
 
             }
 
@@ -79,16 +73,16 @@ public class Semester {
         }
         while(daysTaken.size() < rightAmountOfDays()  && numTries > 0) {
 
-            for(String course : coursesToCheck) {
+            for(Course course : coursesToCheck) {
 
-                for(int i = 0; i < courseSchedules.get(course).length(semNum); i++) {
-                    Character day = courseSchedules.get(course).getDayFromSchedule(semNum,i);
+                for(int i = 0; i < course.getSchedule().getDays(semNum).length(); i++) {
+                    Character day = course.getSchedule().getDayFromSchedule(semNum,i);
                     if(!daysTaken.contains(day)){
                         daysTaken.add(day);
-                        assignedDays.put(course,day);
+                        semCourses.get(course.getName()).setDay(day);
                         break;
                     }
-                    assignedDays.put(course, '-');
+                    semCourses.get(course.getName()).setDay('-');
                 }
                 
                 numTries--;
@@ -101,17 +95,15 @@ public class Semester {
 
     }
     public int numCourses() {
-        return courseSchedules.size();
+        return semCourses.size();
     }
-    public void remove(String course) {
+    public void remove(Course course) {
 
-        courseSchedules.remove(course);
-        assignedDays = null;
+        semCourses.remove(course.getName());
 
-        if(courseSchedules.size() == rightAmountOfDays()) { 
+        if(semCourses.size() == rightAmountOfDays()) { 
             assignDays();
-        }
-        
+        } 
 
     }
     public int rightAmountOfDays() {
@@ -124,4 +116,15 @@ public class Semester {
         return semNum;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder output = new StringBuilder();
+        output.append(semNum + ". ");
+        
+        for(Course c : semCourses.values()) {
+            output.append(c.getName() + "\t" + c.getDayTaken() + "\t");
+        }
+        return output.toString();
+        
+    }
 }
