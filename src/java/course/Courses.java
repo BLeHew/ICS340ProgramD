@@ -112,6 +112,9 @@ public class Courses extends HashMap<String,Course> {
         }
         return output.toString();
     }
+    public void solve2() {
+        
+    }
     public void solve() {
         int i = 1;
         while(!coursesWithConflicts.isEmpty()) {
