@@ -54,9 +54,6 @@ public class CourseSchedule {
         return getDays(semTaken).charAt(index);
     }
 
-    public String getSummerDays() {
-        return summerDays;
-    }
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
