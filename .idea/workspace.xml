@@ -1,17 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="878c3818-f7c7-4139-9a59-44244dbb87e3" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/java/conflict/CoursesWithConflicts.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/java/Driver.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/java/Driver.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/java/FileProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/java/FileProcessor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/java/conflict/Conflict.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/java/constraints/CourseConstraints.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/java/constraints/CourseConstraints.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/java/course/Course.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/java/course/Course.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/java/course/Courses.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/java/course/Courses.java" afterDir="false" />
-    </list>
+    <list default="true" id="878c3818-f7c7-4139-9a59-44244dbb87e3" name="Default" comment="" />
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -304,16 +294,15 @@
       <option name="presentableId" value="Default" />
       <updated>1538083758755</updated>
       <workItem from="1538083764470" duration="8491000" />
-      <workItem from="1538093576904" duration="11084000" />
+      <workItem from="1538093576904" duration="11704000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="19575000" />
+    <option name="totallyTimeSpent" value="20195000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="true" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="7" />
     <layout>
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -325,11 +314,11 @@
       <window_info anchor="right" id="Maven Projects" order="3" />
       <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="7" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.3018066" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.3018066" />
       <window_info anchor="bottom" id="Terminal" order="7" />
       <window_info id="Capture Tool" order="2" />
       <window_info id="Designer" order="2" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.1921875" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1921875" />
       <window_info anchor="right" id="Database" order="3" />
       <window_info id="Learn" order="2" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
