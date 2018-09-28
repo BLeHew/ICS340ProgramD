@@ -7,8 +7,8 @@ import java.util.Random;
 
 public class Fitness {
     private double[] semFitness = new double[11];
-    private static final double MAXFITNESS = Math.pow(30, 11)
-        ;
+    private static final double MAXFITNESS = Math.pow(30, 11);
+    
     public Fitness() {
         Arrays.fill(semFitness, MAXFITNESS);
     }
@@ -40,7 +40,6 @@ public class Fitness {
         DecimalFormat dec = new DecimalFormat("#0.00");
         for(double d : semFitness) {
             sb.append(dec.format(d/MAXFITNESS) + " ");
-            //sb.append(dec.format(d) + " ");
         }
         return sb.toString();
     }

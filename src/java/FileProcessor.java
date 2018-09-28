@@ -35,8 +35,8 @@ public class FileProcessor {
             String[] splitString = sc.nextLine().split("\\s+");
             CourseConstraints.getInstance().addConstraint(splitString[0],splitString[1],splitString[2]);
             if(splitString[1].equals("<")) {
-                CoursesFitness.getInstance().updateFitness(splitString[0], 10, Courses.DOMAINCONFLICT);
-                CoursesFitness.getInstance().updateFitness(splitString[2], 0, Courses.DOMAINCONFLICT);
+                courses.get(splitString[0]).getFitness().update(10, Courses.DOMAINCONFLICT);
+                courses.get(splitString[2]).getFitness().update(0, Courses.DOMAINCONFLICT);
              }
            }
     }
@@ -46,12 +46,12 @@ public class FileProcessor {
         while (sc.hasNextLine()) {
 
             String[] splitString = sc.nextLine().split("\\s+");
-            courses.put(splitString[0], new Course());
-            CourseSchedules.getInstance().put(splitString[0], new CourseSchedule(splitString[1], splitString[2], splitString[3]));
-            CoursesFitness.getInstance().add(splitString[0],new Fitness());
+            CourseSchedule courseSchedule = new CourseSchedule(splitString[1],splitString[2],splitString[3]);
             
-            if(CourseSchedules.getInstance().get(splitString[0]).getDashes().size() > 0) {
-                CoursesFitness.getInstance().trimBadSems(splitString[0], CourseSchedules.getInstance().get(splitString[0]).getDashes());
+            courses.put(splitString[0],new Course(splitString[0],courseSchedule));
+            
+            if(!courseSchedule.getDashes().isEmpty()) {
+                courses.get(splitString[0]).getFitness().trimBadSems(courseSchedule.getDashes());
             }
         }
 

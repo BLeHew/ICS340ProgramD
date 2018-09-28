@@ -61,31 +61,14 @@ public class Schedule {
     public Courses getCourses(){
         return courses;
     }
-    public void assignSemesters() {
-        assignSemesters(0);
-    }
-    public void assignSemesters(long seed) {
-        int semester;
-        if(seed != 0 ) {
-            r.setSeed(seed);
-        }
-        
-        for(Entry<String, Course> c : courses.entrySet()) {
-            semester = r.nextInt(11);
-            courses.setSemTaken(c.getKey(),semester);
-        }
 
-    }
     public void print() {
         System.out.println(courses);
     }
     public void solve() {
         courses.solve();
     }
-    public void resetFitness() {
-        courses.resetFitness();
-        
-    }
+
 
 
 

@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.Map.Entry;
 
 import conflict.Conflict;
+import course.Course;
 
 public class CourseConstraints{
 
@@ -25,25 +26,25 @@ public class CourseConstraints{
         }
         constraintsMap.get(lhs).put(rhs,type);
     }
-    public boolean hasConstraints(String course) {
-        return constraintsMap.containsKey(course);
+    public boolean hasConstraints(Course course) {
+        return constraintsMap.containsKey(course.getName());
     }
-    public boolean coursesHaveConflict(String lhs, int lhsSem, String rhs, int rhsSem) {
-        if(constraintsMap.containsKey(lhs)) {
-            if(constraintsMap.get(lhs).get(rhs).equals("<")) {
-                if(lhsSem >= rhsSem) {
+    public boolean coursesHaveConflict(Course lhsCourse, Course rhsCourse) {
+        if(constraintsMap.containsKey(lhsCourse.getName())) {
+            if(constraintsMap.get(lhsCourse.getName()).get(rhsCourse.getName()).equals("<")) {
+                if(lhsCourse.getSemTaken() >= rhsCourse.getSemTaken()) {
                     return true;
                 }
             }else {
-                if(lhsSem > rhsSem) {
+                if(lhsCourse.getSemTaken() > rhsCourse.getSemTaken()) {
                     return true;
                 }
             }
         }
         return false;
     }
-    public HashMap<String,String> getCourseConflicts(String course){
-        return constraintsMap.get(course);       
+    public HashMap<String,String> getCourseConflicts(Course course){
+        return constraintsMap.get(course.getName());       
     }
     public Collection<String> getCoursesWithConflicts(){
         return constraintsMap.keySet();
