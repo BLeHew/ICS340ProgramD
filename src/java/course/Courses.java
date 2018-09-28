@@ -3,7 +3,7 @@ import java.io.File;
 import java.util.*;
 import java.util.Map.Entry;
 
-import conflict.*;
+import conflict.CoursesWithConflicts;
 import constraints.*;
 import fitness.CoursesFitness;
 import schedule.*;
@@ -11,7 +11,7 @@ import schedule.*;
 
 public class Courses extends HashMap<String,Course> {
 
-    private HashSet<String> coursesWithConflicts;
+    private CoursesWithConflicts coursesWithConflicts;
     
     private Semester[] sems = new Semester[11];
 
@@ -21,13 +21,11 @@ public class Courses extends HashMap<String,Course> {
     public static final double DOMAINCONFLICT = 0;
 
     public Courses(HashMap<String,Course> courses) {
+        coursesWithConflicts = new CoursesWithConflicts();
         this.putAll(courses);
         for(int i = 0; i < 11; i++) {
             sems[i] = new Semester(i);
         }
-    }
-    public Courses(Courses courses) {
-        this.putAll(courses);
     }
     public void assignSemesters() {
         int semester;
@@ -41,20 +39,38 @@ public class Courses extends HashMap<String,Course> {
     }
     public void setSemTaken(String course, int sem) {
 
+
        if(get(course).getSemTaken() != null) {
             sems[get(course).getSemTaken()].remove(get(course));
             if(sems[get(course).getSemTaken()].hasRightAmountOfDays()) {
                 getAssignedDaysFromSemesters(get(course).getSemTaken());
             }
         }
-
-       get(course).setSemTaken(sem);
+        get(course).setSemTaken(sem);
        sems[sem].add(get(course));
 
-        
-       if(sems[sem].hasRightAmountOfDays()) {
+
+        if(sems[sem].hasRightAmountOfDays()) {
             getAssignedDaysFromSemesters(sem);
         }
+        if(get(course).hasConflictingCourses()){
+            for(Entry<String,String> conflictingCourse : get(course).getConflictingCourses().entrySet()){
+                if(get(conflictingCourse.getKey()).getSemTaken() != null) {
+                    if (get(course).hasConflictWith(get(conflictingCourse.getKey()))) {
+                        coursesWithConflicts.addConflict(course, conflictingCourse.getKey());
+                        coursesWithConflicts.addConflict(conflictingCourse.getKey(), course);
+                        get(course).getFitness().update(get(course).getSemTaken(), CONSCONFLICT);
+                        get(conflictingCourse.getKey()).getFitness().update(get(conflictingCourse.getKey()).getSemTaken(), CONSCONFLICT);
+                    } else {
+                        coursesWithConflicts.removeConflict(course, conflictingCourse.getKey());
+                        coursesWithConflicts.removeConflict(conflictingCourse.getKey(), course);
+                        get(course).getFitness().update(get(course).getSemTaken(), NOCONFLICT);
+                        get(conflictingCourse.getKey()).getFitness().update(get(conflictingCourse.getKey()).getSemTaken(), NOCONFLICT);
+                    }
+                }
+            }
+        }
+
     }
     private ArrayList<Integer> getNonFullSemesters() {
         ArrayList<Integer> nonFullSemesters = new ArrayList<Integer>();
@@ -70,36 +86,18 @@ public class Courses extends HashMap<String,Course> {
         for(Entry<String,Course> e : sems[sem].getSemCourses().entrySet()) 
             get(e.getKey()).setDay(e.getValue().getDayTaken());      
     }
-    public boolean hasConflicts() {
-        return coursesWithConflicts.size() > 0;
-    }
     public void checkConflicts() {
-        coursesWithConflicts = new HashSet<String>();
-        
-        for(Course course : values()) {
-            if(CourseConstraints.getInstance().hasConstraints(course)) {
-                HashMap<String, String> courseConflicts = CourseConstraints.getInstance().getCourseConflicts(course);
+        for (Course course : values()) {
 
-                for(Entry<String,String> rhsCourse : courseConflicts.entrySet()) {
-                    if(CourseConstraints.getInstance().coursesHaveConflict(course, get(rhsCourse.getKey()))) {
-                        
-                        coursesWithConflicts.add(course.getName());
-                        coursesWithConflicts.add(rhsCourse.getKey());
-                        course.getFitness().update(course.getSemTaken(), CONSCONFLICT);
-                        get(rhsCourse.getKey()).getFitness().update(get(rhsCourse.getKey()).getSemTaken(), CONSCONFLICT);
-                    }
-                }
-                
+            if (sems[course.getSemTaken()].hasTooManyDays() || course.getDayTaken() == null || course.getDayTaken() == '-') {
+                coursesWithConflicts.addConflict(course.getName(),"DAY");
+                course.getFitness().update(course.getSemTaken(), DAYCONFLICT);
+            }else {
+                coursesWithConflicts.removeConflict(course.getName(),"DAY");
+                course.getFitness().update(course.getSemTaken(), NOCONFLICT);
             }
-            if(sems[course.getSemTaken()].hasTooManyDays()) {
-                coursesWithConflicts.add(course.getName());
-                course.getFitness().update(course.getSemTaken(),DAYCONFLICT);
-            }else if(course.getDayTaken() == null || course.getDayTaken() == '-') {
-                coursesWithConflicts.add(course.getName());
-                course.getFitness().update(course.getSemTaken(),DAYCONFLICT);
-            }
-            if(!coursesWithConflicts.contains(course.getName())) {
-                course.getFitness().update(course.getSemTaken(),NOCONFLICT);
+            if (!coursesWithConflicts.contains(course.getName())) {
+                course.getFitness().update(course.getSemTaken(), NOCONFLICT);
             }
         }
     }
@@ -108,21 +106,21 @@ public class Courses extends HashMap<String,Course> {
         StringBuilder output = new StringBuilder();
         
         for(Semester s : sems) {
-            output.append(s + "\n");
+            output.append(s);
+            output.append("\n");
         }
         return output.toString();
-    }
-    public void solve2() {
-        
     }
     public void solve() {
         int i = 1;
         while(!coursesWithConflicts.isEmpty()) {
-            if(i % 10000 == 0) {
+            if(i % 100000 == 0) {
                 System.out.println(i);
                 System.out.println(this);
             }
-            for(String course : coursesWithConflicts) {
+            HashSet<String> c = new HashSet<>(coursesWithConflicts.keySet());
+
+            for(String course : c) {
                setSemTaken(course,get(course).getFitness().getHealthiestSemester(getNonFullSemesters()));
             }
             i++;

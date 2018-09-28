@@ -33,11 +33,15 @@ public class FileProcessor {
         while (sc.hasNextLine()) {
 
             String[] splitString = sc.nextLine().split("\\s+");
-            CourseConstraints.getInstance().addConstraint(splitString[0],splitString[1],splitString[2]);
-            if(splitString[1].equals("<")) {
+            //CourseConstraints.getInstance().addConstraint(splitString[0],splitString[1],splitString[2]);
+            courses.get(splitString[0]).addConflictingCourse(new Course(splitString[2],splitString[1]));
+            if (splitString[1].equals("<")){
+                courses.get(splitString[2]).addConflictingCourse(new Course(splitString[0],">"));
                 courses.get(splitString[0]).getFitness().update(10, Courses.DOMAINCONFLICT);
                 courses.get(splitString[2]).getFitness().update(0, Courses.DOMAINCONFLICT);
-             }
+            }else {
+                courses.get(splitString[2]).addConflictingCourse(new Course(splitString[0],">="));
+            }
            }
     }
 

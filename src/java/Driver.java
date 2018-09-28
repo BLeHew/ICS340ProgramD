@@ -15,8 +15,9 @@ public class Driver {
         
         System.out.println();
         
-        Courses s = new Courses(fp1.getCourses()); 
-        
+        Courses s = new Courses(fp1.getCourses());
+
+
         s.assignSemesters();
         s.checkConflicts();
         long msStart = System.currentTimeMillis();
@@ -25,7 +26,7 @@ public class Driver {
         System.out.println(s);
         System.out.println(msEnd);
         
-        
+        /*
       
         long best = Long.MAX_VALUE;
         long worst = Long.MIN_VALUE;
