@@ -3,13 +3,12 @@ package constraints;
 import java.util.*;
 import java.util.Map.Entry;
 
-import conflict.Conflict;
 import course.Course;
 
 public class CourseConstraints{
 
 
-    public static HashMap<String,HashMap<String,String>> constraintsMap = new HashMap<String,HashMap<String,String>>();
+    private static HashMap<String,HashMap<String,String>> constraintsMap = new HashMap<String,HashMap<String,String>>();
     
     private static CourseConstraints singleton = new CourseConstraints();
     
@@ -22,7 +21,7 @@ public class CourseConstraints{
 
     public void addConstraint(String lhs,String type, String rhs) {
         if(!constraintsMap.containsKey(lhs)) {
-            constraintsMap.put(lhs, new HashMap<String,String>());
+            constraintsMap.put(lhs, new HashMap<>());
         }
         constraintsMap.get(lhs).put(rhs,type);
     }
@@ -30,19 +29,18 @@ public class CourseConstraints{
         return constraintsMap.containsKey(course.getName());
     }
     public boolean coursesHaveConflict(Course lhsCourse, Course rhsCourse) {
-        if(constraintsMap.containsKey(lhsCourse.getName())) {
-            if(constraintsMap.get(lhsCourse.getName()).get(rhsCourse.getName()).equals("<")) {
-                if(lhsCourse.getSemTaken() >= rhsCourse.getSemTaken()) {
-                    return true;
-                }
-            }else {
-                if(lhsCourse.getSemTaken() > rhsCourse.getSemTaken()) {
-                    return true;
+        if (constraintsMap.containsKey(lhsCourse.getName())) {
+            if (rhsCourse.getSemTaken() != null) {
+                if (constraintsMap.get(lhsCourse.getName()).get(rhsCourse.getName()).equals("<")) {
+                    return (lhsCourse.getSemTaken() >= rhsCourse.getSemTaken());
+                } else {
+                    return (lhsCourse.getSemTaken() > rhsCourse.getSemTaken());
                 }
             }
         }
         return false;
     }
+
     public HashMap<String,String> getCourseConflicts(Course course){
         return constraintsMap.get(course.getName());       
     }
