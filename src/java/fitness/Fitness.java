@@ -51,6 +51,14 @@ public class Fitness {
         }
         return maxAt;
     }
+    public int getRandomHealthySemester(){
+        Random r = new Random();
+        int i = r.nextInt(11);
+        while(semFitness[i] == 0){
+            i = r.nextInt(11);
+        }
+        return i;
+    }
     public void trimBadSems(ArrayList<Integer> badSems) {
         for(Integer i : badSems) {
             removeSems(i);

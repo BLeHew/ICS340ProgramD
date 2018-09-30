@@ -14,7 +14,6 @@ public class Course {
     private CourseSchedule courseSchedule;
     private final String name;
     private HashMap<String,String> conflictingCourses;
-    private boolean conflicting = false;
     private String constraintType;
     public Course(String name,String fallDays, String springDays, String summerDays) {
         this.name = name;
@@ -26,6 +25,7 @@ public class Course {
         this.name = name;
         this.courseSchedule = courseSchedule;
         fitness = new Fitness();
+        fitness.trimBadSems(courseSchedule.getDashes());
         conflictingCourses = new HashMap<>();
     }
     public Course(String name,String constraintType){

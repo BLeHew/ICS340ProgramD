@@ -15,9 +15,9 @@ public class Courses extends HashMap<String,Course> {
     
     private Semester[] sems = new Semester[11];
 
-    public static final double CONSCONFLICT = .999;
-    public static final double DAYCONFLICT = .99999;
-    public static final double NOCONFLICT = 1.000001;
+    public static final double CONSCONFLICT = .99;
+    public static final double DAYCONFLICT = .9999;
+    public static final double NOCONFLICT = 1.0001;
     public static final double DOMAINCONFLICT = 0;
 
     public Courses(HashMap<String,Course> courses) {
@@ -111,17 +111,26 @@ public class Courses extends HashMap<String,Course> {
         }
         return output.toString();
     }
+    @Override
+    public int hashCode() {
+
+        int result = super.hashCode();
+        result = 31 * result + Arrays.hashCode(sems);
+        return result;
+    }
+
     public void solve() {
         int i = 1;
+
         while(!coursesWithConflicts.isEmpty()) {
-            if(i % 100000 == 0) {
-                System.out.println(i);
-                System.out.println(this);
+            if(i % 1000 == 0) {
+                assignSemesters();
+                System.out.println("Resetting");
             }
             HashSet<String> c = new HashSet<>(coursesWithConflicts.keySet());
-
             for(String course : c) {
-               setSemTaken(course,get(course).getFitness().getHealthiestSemester(getNonFullSemesters()));
+                int nextSem = get(course).getFitness().getHealthiestSemester(getNonFullSemesters());
+                setSemTaken(course,nextSem);
             }
             i++;
             checkConflicts();
